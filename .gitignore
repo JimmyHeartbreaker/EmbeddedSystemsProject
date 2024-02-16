@@ -2,3 +2,6 @@
 /*.net
 /*.op.raw
 /*.raw
+/GuiarWizardPro/.vs/*
+/GuiarWizardPro/GuitarWizardPro/bin/*
+/GuiarWizardPro/GuitarWizardPro/obj/*

@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:types="clr-namespace:GuitarWizardPro"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+              xmlns:viewModels="clr-namespace:GuitarWizardPro.ViewModel"
+             x:Class="GuitarWizardPro.MainPage">
+ 
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <GraphicsView x:Name="GraphicsView" Loaded="GraphicsView_Loaded" WidthRequest="1000" HeightRequest="500">
+                
+            </GraphicsView>
+            
+            <Grid x:Name="MainGrid"  >
+                <Grid.BindingContext>
+                    <viewModels:MainPage/>
+                </Grid.BindingContext>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackLayout  Orientation="Horizontal">
+                    <Label Text="{Binding 
+                      Path=ConnectionState,
+                      StringFormat='Connection state: {0}'}"/>
+                </StackLayout>
+                <ListView x:Name="DeviceListView"  ItemsSource="{Binding Devices}" Grid.Row="1">
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <ViewCell>
+
+                                <Label Margin="6" MinimumHeightRequest="10" WidthRequest="100" TextColor="Black" Text="{Binding Name}" FontAttributes="Bold"/>
+
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <StackLayout  Orientation="Vertical" Grid.Row="2">
+                    
+                    <Button x:Name="EnableAudioPlaybackConnectionButton" Text="Enable Audio Playback Connection" Clicked="EnableAudioPlaybackConnectionButton_Click"/>
+                    <Button x:Name="ReleaseAudioPlaybackConnectionButton" Text="Release Audio Playback Connection" Clicked="ReleaseAudioPlaybackConnectionButton_Click"/>
+                    <Button x:Name="OpenAudioPlaybackConnectionButtonButton" Text="Open Connection" Clicked="OpenAudioPlaybackConnectionButtonButton_Click" IsEnabled="False"/>
+                </StackLayout>
+
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
