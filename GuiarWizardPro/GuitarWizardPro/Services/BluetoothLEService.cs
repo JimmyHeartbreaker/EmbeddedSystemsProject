@@ -76,18 +76,8 @@ namespace GuitarWizardPro.Services
                 }
             }
             await _adapter.ConnectToDeviceAsync(device);
-            //switch (device.State)
-            //{
-            //    case Plugin.BLE.Abstractions.DeviceState.Connected:
-            //        {
-            //            break;
-            //        }
-            //    default:
-            //        {
-            //            await Disconnect(deviceGuid);
-            //            break;
-            //        }
-            //}
+
+           
         }
         internal async Task Disconnect(Guid deviceGuid)
         {
@@ -100,17 +90,6 @@ namespace GuitarWizardPro.Services
                 }
             }
             await _adapter.DisconnectDeviceAsync(device);
-            //switch (device.State)
-            //{
-            //    case Plugin.BLE.Abstractions.DeviceState.Disconnected:
-            //        {
-            //            break;
-            //        }
-            //    default:
-            //        {
-            //            break;
-            //        }
-            //}
         }
         public async Task Start()
         {

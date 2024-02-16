@@ -14,10 +14,11 @@ namespace GuitarWizardPro.ViewModel
 {
     public class MainPage : INotifyPropertyChanged
     {
-   
+
         private readonly IDispatcher dispatcher;
         private readonly IAudioBluetoothDeviceService audioBluetoothDeviceManager;
         private readonly IBluetoothLEService bluetoothLEService;
+        private BluetoothAudioServiceChannel? bluetoothAudioServiceChannel;
         public ObservableCollection<AudioDeviceInformation> AudioDevices
         {
             get { return audioBluetoothDeviceManager.Devices; }
@@ -61,15 +62,27 @@ namespace GuitarWizardPro.ViewModel
             this.audioBluetoothDeviceManager.ConnectionStateChanged += AudioBluetoothDeviceManager_ConnectionStateChanged;
             this.bluetoothLEService = bluetoothLEService;
             bluetoothLEService.DeviceAdded += BleService_DeviceAdded;
-            bluetoothLEService.DeviceConnected += BluetoothLEService_DeviceStateChange;
-            bluetoothLEService.DeviceDisconnected += BluetoothLEService_DeviceStateChange
-                ;
+            bluetoothLEService.DeviceConnected += BluetoothLEService_DeviceConnected; ;
+            bluetoothLEService.DeviceDisconnected += BluetoothLEService_DeviceDisconnected;
            
         }
 
-       
 
-        private void BluetoothLEService_DeviceStateChange(object? sender, Plugin.BLE.Abstractions.Contracts.IDevice e)
+        private async void BluetoothLEService_DeviceConnected(object? sender, Plugin.BLE.Abstractions.Contracts.IDevice e)
+        {
+            var deviceVM = GenericDevices.FirstOrDefault(x => x.Id == e.Id);
+            if (deviceVM != null)
+            {
+                deviceVM.DeviceState = e.State;
+
+                bluetoothAudioServiceChannel = new BluetoothAudioServiceChannel( await e.GetServiceAsync(BluetoothServiceGuids.AudioSampleService));
+                await bluetoothAudioServiceChannel.Initialize();
+                var rawAudioData = bluetoothAudioServiceChannel.GetAudioDataRaw();
+            }
+
+        }
+
+        private void BluetoothLEService_DeviceDisconnected(object? sender, Plugin.BLE.Abstractions.Contracts.IDevice e)
         {
             var deviceVM = GenericDevices.FirstOrDefault(x => x.Id == e.Id);
             if(deviceVM!=null)
