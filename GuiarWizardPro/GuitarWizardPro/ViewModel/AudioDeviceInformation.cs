@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GuitarWizardPro.ViewModel
 {
-    public class DeviceInformation
+    public class AudioDeviceInformation
     {
         public string Name { get; set; } = string.Empty;
         public string Id { get; set; } = string.Empty;

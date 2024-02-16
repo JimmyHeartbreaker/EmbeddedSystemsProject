@@ -6,35 +6,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiApp3.Services.Interfaces
+namespace GuitarWizardPro.Services.Interfaces
 {
     public interface IAudioBluetoothDeviceService
     {
         event EventHandler<string> ConnectionStateChanged;
-        ObservableCollection<DeviceInformation> Devices { get; }
+        ObservableCollection<AudioDeviceInformation> Devices { get; }
 
-        Task StartAsync(DeviceInformation deviceInformation);
-        Task<bool> OpenAsync(DeviceInformation deviceInformation);
-        void Disconnect(DeviceInformation deviceInformation);
+        Task StartAsync(AudioDeviceInformation deviceInformation);
+        Task<bool> OpenAsync(AudioDeviceInformation deviceInformation);
+        void Disconnect(AudioDeviceInformation deviceInformation);
     }
 
     public class StubAudioBluetoothDeviceService : IAudioBluetoothDeviceService
     {
-        public ObservableCollection<DeviceInformation> Devices { get; } = [];
+        public ObservableCollection<AudioDeviceInformation> Devices { get; } = [];
 
         public event EventHandler<string>? ConnectionStateChanged;
 
-        public void Disconnect(DeviceInformation deviceInformation)
+        public void Disconnect(AudioDeviceInformation deviceInformation)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> OpenAsync(DeviceInformation deviceInformation)
+        public Task<bool> OpenAsync(AudioDeviceInformation deviceInformation)
         {
             throw new NotImplementedException();
         }
 
-        public Task StartAsync(DeviceInformation deviceInformation)
+        public Task StartAsync(AudioDeviceInformation deviceInformation)
         {
             throw new NotImplementedException();
         }

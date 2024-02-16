@@ -1,5 +1,5 @@
 ﻿using GuitarWizardPro.Platforms.Windows;
-using MauiApp3.Services.Interfaces;
+using GuitarWizardPro.Services.Interfaces;
 using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,

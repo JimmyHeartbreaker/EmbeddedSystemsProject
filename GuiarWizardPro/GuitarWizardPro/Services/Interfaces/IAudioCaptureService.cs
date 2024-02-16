@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiApp3.Services.Interfaces
+namespace GuitarWizardPro.Services.Interfaces
 {
     public interface IAudioCapureService
     {

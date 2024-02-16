@@ -1,6 +1,5 @@
 ﻿using Android.App;
 using Android.Runtime;
-using MauiApp3.Services.Interfaces;
 
 [assembly: UsesPermission(Android.Manifest.Permission.AccessNetworkState)]
 

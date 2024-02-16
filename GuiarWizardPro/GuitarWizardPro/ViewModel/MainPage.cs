@@ -2,32 +2,41 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MauiApp3.Services.Interfaces;
+using GuitarWizardPro.Services;
+using GuitarWizardPro.Services.Interfaces;
+using Microsoft.Maui.Dispatching;
 
 namespace GuitarWizardPro.ViewModel
 {
     public class MainPage : INotifyPropertyChanged
     {
+   
+        private readonly IDispatcher dispatcher;
         private readonly IAudioBluetoothDeviceService audioBluetoothDeviceManager;
-        private string connectionState = "Disconnected";
-        public ObservableCollection<ViewModel.DeviceInformation> Devices
+        private readonly IBluetoothLEService bluetoothLEService;
+        public ObservableCollection<AudioDeviceInformation> AudioDevices
         {
             get { return audioBluetoothDeviceManager.Devices; }
         }
-
-        public string ConnectionState
+        public ObservableCollection<GenericDeviceInformation> GenericDevices
         {
-            get => connectionState;
+            get; set;
+        } = new ObservableCollection<GenericDeviceInformation>();
+
+      
+
+        private string audioConnectionState = "Disconnected";
+        public string AudioConnectionState
+        {
+            get => audioConnectionState;
             set
             {
-                connectionState = value;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("ConnectionState"));
-                }
+                audioConnectionState = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConnectionState"));
             }
         }
 
@@ -36,23 +45,55 @@ namespace GuitarWizardPro.ViewModel
         public MainPage() 
         {
             audioBluetoothDeviceManager = new StubAudioBluetoothDeviceService();
+            bluetoothLEService = new StubBluetoothLEService();
+            dispatcher = new StubDispatcher();
         }
        
 
-        public MainPage( IAudioBluetoothDeviceService? audioBluetoothDeviceManager)
+        public MainPage( IAudioBluetoothDeviceService? audioBluetoothDeviceManager,Services.Interfaces.IBluetoothLEService bluetoothLEService, IDispatcher dispatcher)
         {
-            if(audioBluetoothDeviceManager==null)
-            {
-                throw new ArgumentNullException("audioBluetoothDeviceManager");
-            }
-            
+            ArgumentNullException.ThrowIfNull(audioBluetoothDeviceManager);
+            ArgumentNullException.ThrowIfNull(bluetoothLEService);
+            ArgumentNullException.ThrowIfNull(dispatcher);
+
+            this.dispatcher = dispatcher;
             this.audioBluetoothDeviceManager = audioBluetoothDeviceManager;
             this.audioBluetoothDeviceManager.ConnectionStateChanged += AudioBluetoothDeviceManager_ConnectionStateChanged;
+            this.bluetoothLEService = bluetoothLEService;
+            bluetoothLEService.DeviceAdded += BleService_DeviceAdded;
+            bluetoothLEService.DeviceConnected += BluetoothLEService_DeviceStateChange;
+            bluetoothLEService.DeviceDisconnected += BluetoothLEService_DeviceStateChange
+                ;
+           
         }
 
+       
+
+        private void BluetoothLEService_DeviceStateChange(object? sender, Plugin.BLE.Abstractions.Contracts.IDevice e)
+        {
+            var deviceVM = GenericDevices.FirstOrDefault(x => x.Id == e.Id);
+            if(deviceVM!=null)
+            {
+                deviceVM.DeviceState = e.State;
+            }
+        }
+
+        private void BleService_DeviceAdded(object? sender, Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs e)
+        {
+            dispatcher.Dispatch(() =>
+            {
+                GenericDevices.Add(new GenericDeviceInformation()
+                {
+                    Id = e.Device.Id,
+                    Name = e.Device.Name,
+                    DeviceState = e.Device.State
+                });
+            });
+
+        }
         private void AudioBluetoothDeviceManager_ConnectionStateChanged(object? sender, string e)
         {
-            connectionState = e;
+            audioConnectionState = e;
         }
     }
 }

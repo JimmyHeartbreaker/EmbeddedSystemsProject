@@ -1,5 +1,5 @@
 ﻿using Foundation;
-using MauiApp3.Services.Interfaces;
+using GuitarWizardPro.Services.Interfaces;
 
 namespace GuitarWizardPro
 {

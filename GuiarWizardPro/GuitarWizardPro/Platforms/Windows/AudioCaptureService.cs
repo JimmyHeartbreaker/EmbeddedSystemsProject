@@ -18,7 +18,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Windows.UI.Popups;
 using Microsoft.Maui.Storage;
-using MauiApp3.Services.Interfaces;
+using GuitarWizardPro.Services.Interfaces;
 
 namespace GuitarWizardPro.Platforms.Windows
 {

@@ -9,8 +9,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 using Windows.Foundation.Metadata;
 using Windows.Media.Audio;
-using Windows.UI.Core;
-using MauiApp3.Services.Interfaces;
+using GuitarWizardPro.Services.Interfaces;
 
 
 namespace GuitarWizardPro.Platforms.Windows
@@ -18,12 +17,12 @@ namespace GuitarWizardPro.Platforms.Windows
     public class AudioBluetoothDeviceService : IAudioBluetoothDeviceService
     {
 
-        private readonly Dictionary<string, (ViewModel.DeviceInformation, AudioPlaybackConnection)> audioPlaybackConnections = [];
+        private readonly Dictionary<string, (ViewModel.AudioDeviceInformation, AudioPlaybackConnection)> audioPlaybackConnections = [];
         private readonly IDispatcher dispatcher;
         private readonly DeviceWatcher deviceWatcher;
 
         public event EventHandler<string>? ConnectionStateChanged;
-        public ObservableCollection<ViewModel.DeviceInformation> Devices { get; } = [];
+        public ObservableCollection<ViewModel.AudioDeviceInformation> Devices { get; } = [];
 
         public AudioBluetoothDeviceService(IDispatcher dispatcher)
         {
@@ -44,7 +43,7 @@ namespace GuitarWizardPro.Platforms.Windows
 
         private void DeviceWatcher_Removed(DeviceWatcher sender, DeviceInformationUpdate args)
         {            
-            if (this.audioPlaybackConnections.TryGetValue(args.Id, out (ViewModel.DeviceInformation, AudioPlaybackConnection) device))
+            if (this.audioPlaybackConnections.TryGetValue(args.Id, out (ViewModel.AudioDeviceInformation, AudioPlaybackConnection) device))
             {
                 audioPlaybackConnections.Remove(args.Id);
                 device.Item2.Dispose();
@@ -59,12 +58,12 @@ namespace GuitarWizardPro.Platforms.Windows
         {
             dispatcher.Dispatch(() =>
            {
-               this.Devices.Add(new ViewModel.DeviceInformation() { Name = args.Name, Id = args.Id });
+               this.Devices.Add(new ViewModel.AudioDeviceInformation() { Name = args.Name, Id = args.Id });
            });
 
         }
 
-        public async Task StartAsync(ViewModel.DeviceInformation deviceInformation)
+        public async Task StartAsync(ViewModel.AudioDeviceInformation deviceInformation)
         {
             var deviceId = deviceInformation.Id;
 
@@ -104,9 +103,9 @@ namespace GuitarWizardPro.Platforms.Windows
             });
         }
 
-        public async Task<bool> OpenAsync(ViewModel.DeviceInformation deviceInformation)
+        public async Task<bool> OpenAsync(ViewModel.AudioDeviceInformation deviceInformation)
         {
-            if (this.audioPlaybackConnections.TryGetValue(deviceInformation.Id, out (ViewModel.DeviceInformation, AudioPlaybackConnection) device))
+            if (this.audioPlaybackConnections.TryGetValue(deviceInformation.Id, out (ViewModel.AudioDeviceInformation, AudioPlaybackConnection) device))
             {
               
                return (await device.Item2.OpenAsync()).Status == AudioPlaybackConnectionOpenResultStatus.Success;
@@ -115,9 +114,9 @@ namespace GuitarWizardPro.Platforms.Windows
 
         }
 
-        public void Disconnect(ViewModel.DeviceInformation deviceInformation)
+        public void Disconnect(ViewModel.AudioDeviceInformation deviceInformation)
         {
-            if (this.audioPlaybackConnections.TryGetValue(deviceInformation.Id, out (ViewModel.DeviceInformation, AudioPlaybackConnection) device))
+            if (this.audioPlaybackConnections.TryGetValue(deviceInformation.Id, out (ViewModel.AudioDeviceInformation, AudioPlaybackConnection) device))
             {
                 device.Item2.Dispose();
                 device.Item2.StateChanged -= AudioPlaybackConnection_ConnectionStateChanged;

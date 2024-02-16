@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:types="clr-namespace:GuitarWizardPro"
-             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
               xmlns:viewModels="clr-namespace:GuitarWizardPro.ViewModel"
              x:Class="GuitarWizardPro.MainPage">
  
@@ -15,21 +14,15 @@
                 
             </GraphicsView>
             
-            <Grid x:Name="MainGrid"  >
-                <Grid.BindingContext>
+            <StackLayout x:Name="MainGrid"  >
+                <StackLayout.BindingContext>
                     <viewModels:MainPage/>
-                </Grid.BindingContext>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <StackLayout  Orientation="Horizontal">
-                    <Label Text="{Binding 
-                      Path=ConnectionState,
-                      StringFormat='Connection state: {0}'}"/>
-                </StackLayout>
-                <ListView x:Name="DeviceListView"  ItemsSource="{Binding Devices}" Grid.Row="1">
+                </StackLayout.BindingContext>
+                <Label Text="{Binding 
+                    Path=AudioConnectionState,
+                    StringFormat='Connection state: {0}'}"/>
+               
+                <ListView x:Name="AudioDeviceListView"  ItemsSource="{Binding AudioDevices}" Grid.Row="1">
                     <ListView.ItemTemplate>
                         <DataTemplate >
                             <ViewCell>
@@ -40,14 +33,26 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <StackLayout  Orientation="Vertical" Grid.Row="2">
                     
-                    <Button x:Name="EnableAudioPlaybackConnectionButton" Text="Enable Audio Playback Connection" Clicked="EnableAudioPlaybackConnectionButton_Click"/>
-                    <Button x:Name="ReleaseAudioPlaybackConnectionButton" Text="Release Audio Playback Connection" Clicked="ReleaseAudioPlaybackConnectionButton_Click"/>
-                    <Button x:Name="OpenAudioPlaybackConnectionButtonButton" Text="Open Connection" Clicked="OpenAudioPlaybackConnectionButtonButton_Click" IsEnabled="False"/>
-                </StackLayout>
+                <Button x:Name="EnableAudioPlaybackConnectionButton" Text="Enable Audio Playback Connection" Clicked="EnableAudioPlaybackConnectionButton_Click"/>
+                <Button x:Name="ReleaseAudioPlaybackConnectionButton" Text="Release Audio Playback Connection" Clicked="ReleaseAudioPlaybackConnectionButton_Click"/>
+                <Button x:Name="OpenAudioPlaybackConnectionButtonButton" Text="Open Connection" Clicked="OpenAudioPlaybackConnectionButtonButton_Click" IsEnabled="False"/>
+                <ListView x:Name="GenericDeviceListView" ItemSelected="GenericDeviceListView_ItemSelected" ItemsSource="{Binding GenericDevices}" Grid.Row="1">
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Margin="6" MinimumHeightRequest="10"  TextColor="Black" Text="{Binding Name}" FontAttributes="Bold"/>
+                                    <Label Margin="6" MinimumHeightRequest="10"  TextColor="Black" Text="{Binding ConnectionState}"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Button x:Name="ConnectGenericDevice" Text="Connect" Clicked="ConnectGeneric_Click" IsEnabled="true"/>
 
-            </Grid>
+
+            </StackLayout>
         </VerticalStackLayout>
     </ScrollView>
 

@@ -12,13 +12,7 @@ namespace GuitarWizardPro
         {
             base.OnCreate(savedInstanceState);
 
-            BroadcastReceiver x;
-            IEnumerable<ConnectionProfile> profiles = Connectivity.Current.ConnectionProfiles;
-
-            if (profiles.Contains(ConnectionProfile.Bluetooth))
-            {
-                // Active Wi-Fi connection.
-            }
+          
 
         }
     }
