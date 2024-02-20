@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.22621.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -59,10 +58,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="FftSharp" Version="2.1.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Plugin.BLE" Version="3.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\GuitarWizardPro.Services\GuitarWizardPro.Services.csproj" />
+	  <ProjectReference Include="..\GuitarWizardPro.ViewModel\GuitarWizardPro.ViewModel.csproj" />
 	</ItemGroup>
 
 </Project>

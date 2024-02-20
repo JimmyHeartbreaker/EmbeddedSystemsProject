@@ -17,7 +17,7 @@ namespace GuitarWizardPro.ViewModel
 
         private readonly IDispatcher dispatcher;
         private readonly IAudioBluetoothDeviceService audioBluetoothDeviceManager;
-        private readonly IBluetoothLEService bluetoothLEService;
+        private readonly IBLEClientService bluetoothLEService;
         private BluetoothAudioServiceChannel? bluetoothAudioServiceChannel;
         public ObservableCollection<AudioDeviceInformation> AudioDevices
         {
@@ -46,12 +46,12 @@ namespace GuitarWizardPro.ViewModel
         public MainPage() 
         {
             audioBluetoothDeviceManager = new StubAudioBluetoothDeviceService();
-            bluetoothLEService = new StubBluetoothLEService();
+            bluetoothLEService = new StubBLEClientService();
             dispatcher = new StubDispatcher();
         }
        
 
-        public MainPage( IAudioBluetoothDeviceService? audioBluetoothDeviceManager,Services.Interfaces.IBluetoothLEService bluetoothLEService, IDispatcher dispatcher)
+        public MainPage( IAudioBluetoothDeviceService? audioBluetoothDeviceManager,Services.Interfaces.IBLEClientService bluetoothLEService, IDispatcher dispatcher)
         {
             ArgumentNullException.ThrowIfNull(audioBluetoothDeviceManager);
             ArgumentNullException.ThrowIfNull(bluetoothLEService);
@@ -75,9 +75,19 @@ namespace GuitarWizardPro.ViewModel
             {
                 deviceVM.DeviceState = e.State;
 
+                
                 bluetoothAudioServiceChannel = new BluetoothAudioServiceChannel( await e.GetServiceAsync(BluetoothServiceGuids.AudioSampleService));
                 await bluetoothAudioServiceChannel.Initialize();
-                var rawAudioData = bluetoothAudioServiceChannel.GetAudioDataRaw();
+
+                var dataList = new List<short>();
+                int count = 0;
+                await foreach(var data in  bluetoothAudioServiceChannel.GetAudioDatasRaw())
+                {
+                    dataList.Add(BitConverter.ToInt16(data));
+                    count++;
+                    if (count > 2000)
+                        break;
+                }
             }
 
         }

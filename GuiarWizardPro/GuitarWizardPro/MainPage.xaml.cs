@@ -8,7 +8,7 @@ namespace GuitarWizardPro
 {
     public partial class MainPage : ContentPage
     {
-        private BluetoothLEService bleService;
+        private BLEClientService bleService;
         private ViewModel.MainPage viewModel;
         private AudioBufferService? audioBufferService;
 
@@ -17,11 +17,24 @@ namespace GuitarWizardPro
             InitializeComponent();
             viewModel = new ViewModel.MainPage();
 
-            bleService = new BluetoothLEService();
+            bleService = new BLEClientService();
 
 
         }
-
+        private IWifiAuthBLEService WifiAuthBLEService
+        {
+            get
+            {
+                if (Handler?.MauiContext != null)
+                {
+                    return Handler.MauiContext.Services.GetRequiredService<IWifiAuthBLEService>();
+                }
+                else
+                {
+                    return new StubWifiAuthBLEService();
+                }
+            }
+        }
         private IAudioCapureService AudioCaptureService
         {
             get
@@ -113,8 +126,9 @@ namespace GuitarWizardPro
            
             this.GraphicsView.Drawable = new SignalPane(audioBufferService);
           
-            AudioCaptureService.Start(); 
-            await bleService.Start();
+            AudioCaptureService.Start();
+            await WifiAuthBLEService.Start();
+            //await bleService.Start();
 
 
         }

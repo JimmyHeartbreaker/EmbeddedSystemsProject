@@ -1,6 +1,6 @@
 ﻿
 
-namespace GuitarWizardPro.ViewModel
+namespace GuitarWizardPro
 {
     internal class StubDispatcher : IDispatcher
     {

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace GuitarWizardPro.Services
 {
-    public class BluetoothLEService : IBluetoothLEService
+    public class BLEClientService : IBLEClientService
     {
         public event EventHandler<DeviceEventArgs>? DeviceAdded;
         public event EventHandler<DeviceEventArgs>? DeviceRemoved;
@@ -32,8 +32,9 @@ namespace GuitarWizardPro.Services
         private readonly IAdapter _adapter;
 
         
-        public BluetoothLEService() 
+        public BLEClientService() 
         {
+            
             _bluetoothManager = CrossBluetoothLE.Current;
            
             _bluetoothManager.StateChanged += OnStateChanged;
@@ -79,7 +80,7 @@ namespace GuitarWizardPro.Services
 
            
         }
-        internal async Task Disconnect(Guid deviceGuid)
+        public async Task Disconnect(Guid deviceGuid)
         {
             if (!connectableDevices.TryGetValue(deviceGuid, out IDevice? device))
             {

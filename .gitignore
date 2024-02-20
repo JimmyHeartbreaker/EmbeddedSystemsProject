@@ -5,3 +5,9 @@
 /GuiarWizardPro/.vs/*
 /GuiarWizardPro/GuitarWizardPro/bin/*
 /GuiarWizardPro/GuitarWizardPro/obj/*
+/GuiarWizardPro/GuitarWizardPro.Services/bin/*
+/GuiarWizardPro/GuitarWizardPro.Services/obj/*
+/GuiarWizardPro/GuitarWizardPro.Tests/*
+/GuiarWizardPro/GuitarWizardPro.ViewModel/bin/*
+/GuiarWizardPro/GuitarWizardPro.ViewModel/obj/*
+/GuitarWizardPro.Arduino/libraries/*

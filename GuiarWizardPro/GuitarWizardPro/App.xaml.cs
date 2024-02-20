@@ -2,6 +2,7 @@
 {
     public partial class App : Application
     {
+        public const string DeviceName = "GuitarWizardPro";
         public App()
         {
             InitializeComponent();

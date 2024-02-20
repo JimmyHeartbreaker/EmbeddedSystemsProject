@@ -44,7 +44,7 @@ namespace GuitarWizardPro.Services
             }
         }
 
-        internal void ResetBuffer()
+        public void ResetBuffer()
         {
             bufferPosition = 0;
         }

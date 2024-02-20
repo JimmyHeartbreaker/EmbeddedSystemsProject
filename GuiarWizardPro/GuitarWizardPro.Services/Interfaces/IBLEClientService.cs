@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GuitarWizardPro.Services.Interfaces
 {
-    public interface IBluetoothLEService
+    public interface IBLEClientService
     {
         event EventHandler<DeviceEventArgs>? DeviceAdded;
         event EventHandler<DeviceEventArgs>? DeviceRemoved;
@@ -17,7 +17,7 @@ namespace GuitarWizardPro.Services.Interfaces
         IReadOnlyDictionary<Guid, IDevice> ConnectableDevices { get;  }
     }
 
-    public class StubBluetoothLEService : IBluetoothLEService
+    public class StubBLEClientService : IBLEClientService
     {
         public IReadOnlyDictionary<Guid, IDevice> ConnectableDevices => throw new NotImplementedException();
 
