@@ -15,14 +15,16 @@ using Plugin.BLE.UWP;
 using Windows.UI.WebUI;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Net.Sockets;
+using System.Net;
 namespace GuitarWizardPro.Platforms.Windows
 {
     public class WifiAuthBLEService : Services.Interfaces.IWifiAuthBLEService
     {
         static byte[] username = Encoding.UTF8.GetBytes("hardaker-j@ulster.ac.uk");
         static byte[] password = Encoding.UTF8.GetBytes("EveryWeekIsAG00dWeek");
-        static byte[] ssid = Encoding.UTF8.GetBytes("VM5678927");
-        static byte[] networkSecurityKey = Encoding.UTF8.GetBytes("jjbhpqDHs5xz");
+        static byte[] ssid = Encoding.UTF8.GetBytes("EggTart");
+        static byte[] networkSecurityKey = Encoding.UTF8.GetBytes("Jun0Am3l1aCh0i");
         static byte[] securityType = Encoding.UTF8.GetBytes("WPA2-Personal");
         static byte[] encryptionType = Encoding.UTF8.GetBytes("AES");
 
@@ -36,11 +38,22 @@ namespace GuitarWizardPro.Platforms.Windows
         };
 
         private GattServiceProvider? serviceProvider;
-        private GattLocalCharacteristic? usernameCharacteristic;
-        private GattLocalCharacteristic? passwordCharacteristic;
 
         public WifiAuthBLEService() 
         {
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
         public async Task<bool> Start()
         {
@@ -55,8 +68,9 @@ namespace GuitarWizardPro.Platforms.Windows
             {
                 return false;
             }
-
+            
             GattLocalCharacteristicResult result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.UsernameCharacteristic, GattParameters("Username",username));
+            
             result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.PasswordCharacteristic, 
                 GattParameters("Password", password));
             result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.SSIDCharacteristic,
@@ -67,7 +81,12 @@ namespace GuitarWizardPro.Platforms.Windows
                 GattParameters("Encryption", encryptionType));
             result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.SecurityKeyCharacteristic,
                 GattParameters("SecurityKey", networkSecurityKey));
-           
+            result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.SecurityKeyCharacteristic,
+                GattParameters("SecurityKey", networkSecurityKey));
+            result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.IpAddressCharacteristic,
+                GattParameters("IpAddress", Encoding.UTF8.GetBytes(GetLocalIPAddress())));
+            result.Characteristic.ReadRequested += Characteristic_ReadRequested
+                ;
             // BT_Code: Indicate if your sever advertises as connectable and discoverable.
             GattServiceProviderAdvertisingParameters advParameters = new()
             {
@@ -79,11 +98,19 @@ namespace GuitarWizardPro.Platforms.Windows
                 // of this service
                 IsDiscoverable = true
             };
+            serviceProvider.AdvertisementStatusChanged += ServiceProvider_AdvertisementStatusChanged;
             serviceProvider.StartAdvertising(advParameters);
 
             return true;
         }
 
-       
+        private void Characteristic_ReadRequested(GattLocalCharacteristic sender, GattReadRequestedEventArgs args)
+        {
+            
+        }
+
+        private void ServiceProvider_AdvertisementStatusChanged(GattServiceProvider sender, GattServiceProviderAdvertisementStatusChangedEventArgs args)
+        {
+        }
     }
 }

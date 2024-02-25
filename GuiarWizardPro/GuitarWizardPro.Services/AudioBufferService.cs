@@ -14,38 +14,41 @@ namespace GuitarWizardPro.Services
         public event EventHandler? BufferFull;
 
 
-        const int CAPACITY = 2000;
-        private unsafe float* buffer;
+        const int CAPACITY = 1024;
+        private unsafe short* buffer;
         private int bufferPosition = 0;
 
-        public unsafe Span<float> AudioBuffer => new(buffer, CAPACITY);
+        public unsafe Span<short> AudioBuffer => new(buffer, CAPACITY);
 
         public unsafe AudioBufferService(IAudioCapureService audioCapureService)
         {
             audioCapureService.AudioFrameProcessed += AudioCapureService_AudioFrameProcessed;
-            buffer = (float*)Marshal.AllocHGlobal(4 * CAPACITY);
+            buffer = (short*)Marshal.AllocHGlobal(2 * CAPACITY);
         }
-
+        int frames;
+        public int FrameCount => frames;
         private unsafe void AudioCapureService_AudioFrameProcessed(object? sender, (nint, int) e)
         {
-            float* data = (float*)e.Item1;
-            int len = e.Item2 / 4;
-            var copyLen = Math.Min(len, CAPACITY - bufferPosition);
+            short* data = (short*)e.Item1;
+            int nItems = e.Item2 / 2;
+            var copyLen = Math.Min(nItems, CAPACITY - bufferPosition);
 
             if (bufferPosition < CAPACITY)
             {
-                Buffer.MemoryCopy(data, buffer + bufferPosition, copyLen * 4, copyLen * 4);
+                Buffer.MemoryCopy(data, buffer + bufferPosition, copyLen * 2, copyLen * 2);
                 bufferPosition += copyLen;
-
                 if (bufferPosition == CAPACITY)
                 {
+                    
                     BufferFull?.Invoke(this, EventArgs.Empty);
+                    ResetBuffer();
                 }
             }
         }
 
         public void ResetBuffer()
         {
+            frames++;
             bufferPosition = 0;
         }
 

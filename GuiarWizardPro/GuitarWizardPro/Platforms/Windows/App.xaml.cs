@@ -29,7 +29,7 @@ namespace GuitarWizardPro.WinUI
         private void ServiceRegistrar(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IAudioBluetoothDeviceService, AudioBluetoothDeviceService>();
-            serviceCollection.AddSingleton<IAudioCapureService, AudioCaptureService>();
+            serviceCollection.AddSingleton<IAudioCapureService, UdpAudioCaptureService>();
             serviceCollection.AddSingleton<IWifiAuthBLEService, WifiAuthBLEService>();
         }
     }

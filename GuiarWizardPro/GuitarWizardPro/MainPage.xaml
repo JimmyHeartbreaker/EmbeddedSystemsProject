@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:types="clr-namespace:GuitarWizardPro"
-              xmlns:viewModels="clr-namespace:GuitarWizardPro.ViewModel"
+              xmlns:viewModels="clr-namespace:GuitarWizardPro.ViewModel"  
+             xmlns:skiaCtrls="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="GuitarWizardPro.MainPage">
  
 
@@ -10,11 +11,24 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <GraphicsView x:Name="GraphicsView" Loaded="GraphicsView_Loaded" WidthRequest="1000" HeightRequest="500">
+            <!--<GraphicsView x:Name="GraphicsView" Loaded="GraphicsView_Loaded"   HeightRequest="500" WidthRequest="1000">
                 
-            </GraphicsView>
+            </GraphicsView>-->
+            <Grid MinimumHeightRequest="500" MinimumWidthRequest="1000"  
+                HeightRequest="500" WidthRequest="1000"    HorizontalOptions="Fill">
+                <types:ImageEditor x:Name="canvasView"  PaintSurface="CanvasView_OnPaintSurface" Loaded="canvasView_Loaded" 
+                                        MinimumHeightRequest="500" MinimumWidthRequest="1000"  
+                                        HeightRequest="500" WidthRequest="1000">
+                    <skiaCtrls:SKCanvasView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </skiaCtrls:SKCanvasView.GestureRecognizers>
+                </types:ImageEditor>
+            </Grid>
+            <!--<Image x:Name="GraphicsViewImage" Loaded="GraphicsViewImage_Loaded" WidthRequest="1000"  HeightRequest="500">
+              
+            </Image>-->
             
-            <StackLayout x:Name="MainGrid"  >
+            <!--<StackLayout x:Name="MainGrid"  >
                 <StackLayout.BindingContext>
                     <viewModels:MainPage/>
                 </StackLayout.BindingContext>
@@ -52,7 +66,7 @@
                 <Button x:Name="ConnectGenericDevice" Text="Connect" Clicked="ConnectGeneric_Click" IsEnabled="true"/>
 
 
-            </StackLayout>
+            </StackLayout>-->
         </VerticalStackLayout>
     </ScrollView>
 

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.Services", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.ViewModel", "GuitarWizardPro.ViewModel\GuitarWizardPro.ViewModel.csproj", "{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.Console", "GuitarWizardPro.Console\GuitarWizardPro.Console.csproj", "{C2A01CCB-8274-40C3-B006-0C5041CB230D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.WinForms", "GuitarWizardPro.WinForms\GuitarWizardPro.WinForms.csproj", "{378B7EF2-963B-4B27-B462-C2B252E22B91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
