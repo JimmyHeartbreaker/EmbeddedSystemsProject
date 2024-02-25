@@ -11,3 +11,9 @@
 /GuiarWizardPro/GuitarWizardPro.ViewModel/bin/*
 /GuiarWizardPro/GuitarWizardPro.ViewModel/obj/*
 /GuitarWizardPro.Arduino/libraries/*
+/GuiarWizardPro/GuitarWizardPro.WPF/obj
+/GuiarWizardPro/GuitarWizardPro.WPF/bin/Debug/net8.0-windows
+/GuiarWizardPro/GuitarWizardPro.WinForms/obj
+/GuiarWizardPro/GuitarWizardPro.Console/obj
+/GuiarWizardPro/GuitarWizardPro.Console/bin/Debug/net8.0
+/GuiarWizardPro/GuitarWizardPro.WinForms/bin/Debug/net8.0-windows
