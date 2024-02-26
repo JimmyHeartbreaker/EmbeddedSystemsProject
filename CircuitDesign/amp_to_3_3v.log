@@ -1,4 +1,4 @@
-Circuit: * D:\_DOCUMENTS\Embedded Systems\EmbeddedSystemsProject\amp_to_3_3v.asc
+Circuit: * D:\_DOCUMENTS\Embedded Systems\EmbeddedSystemsProject\CircuitDesign\amp_to_3_3v.asc
 
 Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
 Starting Gmin stepping
@@ -21,21 +21,21 @@ Gmin = 0
 Gmin stepping succeeded in finding the operating point.
 
 
-Date: Tue Feb  6 22:04:06 2024
-Total elapsed time: 0.300 seconds.
+Date: Mon Feb 26 21:05:26 2024
+Total elapsed time: 0.196 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 2477
-traniter = 2048
-tranpoints = 1025
-accept = 1025
+totiter = 2523
+traniter = 2086
+tranpoints = 1044
+accept = 1044
 rejected = 0
 matrix size = 25
-fillins = 26
+fillins = 34
 solver = Normal
-Avg thread counts: 3.9/6.7/6.7/3.9
-Matrix Compiler1: 3.48 KB object code size  1.8/1.1/[0.7]
-Matrix Compiler2: 2.95 KB object code size  0.5/0.6/[0.5]
+Avg thread counts: 3.8/6.6/6.6/3.8
+Matrix Compiler1:     222 opcodes  0.7/[0.4]/0.4
+Matrix Compiler2: 3.09 KB object code size  0.3/0.3/[0.2]
 

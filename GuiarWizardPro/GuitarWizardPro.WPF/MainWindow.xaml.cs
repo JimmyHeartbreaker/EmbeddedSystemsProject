@@ -44,6 +44,7 @@ namespace GuitarWizardPro.WPF
             fFTService = new FFTService(audioBufferService);
             FFTItems.DataContext = fFTService;
              wifiAuthBLEService = new WifiAuthBLEService();
+            var notes = GuitarNotes.Notes;
 
         }
 

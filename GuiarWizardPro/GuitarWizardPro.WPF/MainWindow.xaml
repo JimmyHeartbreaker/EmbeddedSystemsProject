@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GuitarWizardPro.WPF"
         
-       ResizeMode="NoResize"  Title="GuitarWizardPro" MaxWidth="1024" MaxHeight="710"  >
-    <StackPanel Background="Black" Margin="0,0,0,0">
+       ResizeMode="NoResize"  SizeToContent="WidthAndHeight"   Title="GuitarWizardPro" >
+    <StackPanel Background="Black" Height="670" >
         <Grid Width="800" Height="120">
             <Grid.Background>
                 <RadialGradientBrush RadiusX="0.5" RadiusY="0.5">
@@ -16,14 +16,14 @@
                     <GradientStop Color="Black" Offset="1.0" />
                 </RadialGradientBrush>                
             </Grid.Background>
-            <Image Source="/Content/title.png" >
+            <Image Source="/Content/title2.png" >
                 
             </Image>
         </Grid>
         <Image  Margin="0,0,0,0" x:Name="image" Width="1024" Height="500" Loaded="image_Loaded" >
             
         </Image>
-        <ListBox Height="50" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding TopFrequencies}" x:Name="FFTItems">
+        <ListBox Background="Black" Height="50" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding TopFrequencies}" x:Name="FFTItems" BorderBrush="Black">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True" />
@@ -32,7 +32,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border Width="100" BorderThickness="1" BorderBrush="Black">
-                        <TextBlock Text="{Binding}" FontSize="32">
+                        <TextBlock Text="{Binding}" Foreground="LightGray" FontSize="30">
                         
                         
                         </TextBlock>
