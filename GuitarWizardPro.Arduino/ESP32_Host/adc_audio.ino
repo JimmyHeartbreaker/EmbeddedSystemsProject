@@ -73,9 +73,9 @@ namespace Audio::ADC
     PrimaryBuffer = (int16_t*)malloc(BUFFER_SIZE*2);
     SecondaryBuffer =  (int16_t*)malloc(BUFFER_SIZE*2);
     xTaskCreatePinnedToCore(onBufferFull, "Handler Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
-    adcTimer = timerBegin(3, 2, true); // 80 MHz / 80 = 1 MHz hardware clock for easy figuring
-    timerAttachInterrupt(adcTimer, &onTimer, true); // Attaches the handler function to the timer 
-    timerAlarmWrite(adcTimer, 1250, true); // Interrupts when counter == 625, i.e. 32000 times a second
+    adcTimer = timerBegin(3, 20, true);
+    timerAttachInterrupt(adcTimer, &onTimer, true);
+    timerAlarmWrite(adcTimer, 125, true); 
     timerAlarmEnable(adcTimer);
   }
 }

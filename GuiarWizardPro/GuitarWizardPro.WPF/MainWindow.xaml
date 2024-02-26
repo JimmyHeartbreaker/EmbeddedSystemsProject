@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GuitarWizardPro.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="1000">
+        Title="MainWindow" >
     <Grid Background="Black">
-        <Image x:Name="image" Width="1000" Height="500" MouseDown="image_MouseDown" >
+        <Image x:Name="image" Width="1024" Height="500" Loaded="image_Loaded" >
             
         </Image>
     </Grid>

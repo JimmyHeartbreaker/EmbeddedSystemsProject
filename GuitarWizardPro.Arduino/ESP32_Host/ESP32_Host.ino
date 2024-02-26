@@ -7,9 +7,9 @@ using namespace BT::LE::WifiInfo;
 WifiInfo wifiInfo;
 String ipAddresses[10];
 int ipAddressLength = 0;
-bool wifiConnected=false;
 
 enum State {
+  OFF,
   NETWORK_DETAILS_FETCH,
   WIFI_CONNECT,
   WIFI_HOST,
@@ -17,24 +17,34 @@ enum State {
   ACTIVE
 } ;
 
-bool started = false;
-enum State state = State::WIFI_HOST;
-//int state;
+enum State state = State::OFF;
+
 void loop() 
 { 
-  if(!started)
+  if(state == State::OFF)
   {
-    int byte = Serial.read();
-    if(byte == 'A')
+    int mode = Serial.read();
+    switch(mode)
     {
-      Serial.println("starting");
-      started=true;
-      
-      Audio::ADC::Setup(onBufferFull);
+      case 'h':
+        state = State::WIFI_HOST;
+        break;
+      case 'c':
+        state= State::WIFI_CONNECT;
+        break;
+      case 'f':
+        state = State::NETWORK_DETAILS_FETCH;
+        break;
+      default:break;
+    }
+    if(state!= State::OFF)
+    {
       Serial.println("started");
     }
-    return;
+    else
+      return;
   }
+
   switch(state)
   {
     case State::NETWORK_DETAILS_FETCH:
@@ -84,6 +94,8 @@ void loop()
       Serial.println("UDP_SETUP::BEGIN");
       if(Audio::UDP::StartServer())
       {
+        Audio::ADC::Setup(onBufferFull);     
+ 
         state = State::ACTIVE;
       }
       Serial.println("UDP_SETUP::END");
@@ -95,18 +107,14 @@ void loop()
 int frames=0;
 void onBufferFull()
 {
-  if(state == State::ACTIVE)
-  {
-    
     Audio::UDP::SendAudio((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2);
-  }
 }
 void setup() 
 {
   delay(2000);
   Serial.begin(115200);
   Serial.println("Setup started");
- 
+
   wifiInfo.SSID = "VM5678927_EXT";
   wifiInfo.ProviderIpAddress = "192.168.0.56";
   wifiInfo.SecurityKey = "jjbhpqDHs5xz";

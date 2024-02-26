@@ -21,6 +21,7 @@ namespace GuitarWizardPro.WinForms
 
         public Form1()
         {
+         
             InitializeComponent();
             InitializeBitmap();
             udpAudioCaptureService = new UdpAudioCaptureService();

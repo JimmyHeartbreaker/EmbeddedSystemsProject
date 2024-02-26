@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using GuitarWizardPro.Services.Interfaces;
 
-namespace GuitarWizardPro.WinForms
+namespace GuitarWizardPro.WPF
 {
    
 

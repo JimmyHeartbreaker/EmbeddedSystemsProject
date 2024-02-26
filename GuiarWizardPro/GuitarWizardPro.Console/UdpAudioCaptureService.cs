@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using GuitarWizardPro.Services.Interfaces;
 
-namespace GuitarWizardPro.WinForms
+namespace GuitarWizardPro.Console
 {
    
 
@@ -36,7 +36,7 @@ namespace GuitarWizardPro.WinForms
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+             //   Console.WriteLine(e.ToString());
             }
 
         }
