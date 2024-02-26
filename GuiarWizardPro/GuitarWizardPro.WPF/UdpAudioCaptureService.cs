@@ -43,29 +43,26 @@ namespace GuitarWizardPro.WPF
         public int frames;
         private async  Task ReceiveUdp()
         {
-            while (true)
+            try
             {
-                var recieved = await udpClient.ReceiveAsync();
-                unsafe
+                while (true)
                 {
-                    fixed (byte* p = recieved.Buffer)
+                    var recieved = await udpClient.ReceiveAsync();
+                    unsafe
                     {
+                        fixed (byte* p = recieved.Buffer)
+                        {
 
-                        AudioFrameProcessed?.Invoke(this, ((nint)p, 128));
-                        frames++;
+                            AudioFrameProcessed?.Invoke(this, ((nint)p, 128));
+                            frames++;
+                        }
                     }
                 }
             }
+            catch(Exception e)
+            {
+                throw;
+            }
         }
-
-        public async Task Initialize()
-        {
-
-        }
-
-      
-
-        
     }
-
 }

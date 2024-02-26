@@ -3,15 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro", "GuitarWizardPro\GuitarWizardPro.csproj", "{28E4045B-A870-40BA-9C10-34A20589C5B1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.Services", "GuitarWizardPro.Services\GuitarWizardPro.Services.csproj", "{5A03DB7E-9542-4979-B545-35A261F8E5A6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.ViewModel", "GuitarWizardPro.ViewModel\GuitarWizardPro.ViewModel.csproj", "{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.Console", "GuitarWizardPro.Console\GuitarWizardPro.Console.csproj", "{C2A01CCB-8274-40C3-B006-0C5041CB230D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.WinForms", "GuitarWizardPro.WinForms\GuitarWizardPro.WinForms.csproj", "{378B7EF2-963B-4B27-B462-C2B252E22B91}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.WPF", "GuitarWizardPro.WPF\GuitarWizardPro.WPF.csproj", "{5E25722D-BFEE-4EED-809A-63CE355013DC}"
 EndProject
@@ -21,12 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{28E4045B-A870-40BA-9C10-34A20589C5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28E4045B-A870-40BA-9C10-34A20589C5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28E4045B-A870-40BA-9C10-34A20589C5B1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{28E4045B-A870-40BA-9C10-34A20589C5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28E4045B-A870-40BA-9C10-34A20589C5B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28E4045B-A870-40BA-9C10-34A20589C5B1}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{5A03DB7E-9542-4979-B545-35A261F8E5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A03DB7E-9542-4979-B545-35A261F8E5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A03DB7E-9542-4979-B545-35A261F8E5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,14 +23,6 @@ Global
 		{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A08F7B97-C5DB-4519-94EA-F7A97DE3AFDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2A01CCB-8274-40C3-B006-0C5041CB230D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{378B7EF2-963B-4B27-B462-C2B252E22B91}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E25722D-BFEE-4EED-809A-63CE355013DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E25722D-BFEE-4EED-809A-63CE355013DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E25722D-BFEE-4EED-809A-63CE355013DC}.Release|Any CPU.ActiveCfg = Release|Any CPU

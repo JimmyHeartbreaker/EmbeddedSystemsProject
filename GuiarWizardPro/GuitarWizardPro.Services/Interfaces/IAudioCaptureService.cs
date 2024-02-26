@@ -11,9 +11,8 @@ namespace GuitarWizardPro.Services.Interfaces
     public interface IAudioCapureService
     {
         void Start();
-        Task Initialize();
 
-        unsafe event EventHandler<(nint, int)>? AudioFrameProcessed;
+        unsafe event EventHandler<(nint dataPtr, int length)>? AudioFrameProcessed;
 
     }
 
@@ -22,10 +21,7 @@ namespace GuitarWizardPro.Services.Interfaces
 
         public event EventHandler<(nint, int)>? AudioFrameProcessed;
 
-        public Task Initialize()
-        {
-            throw new NotImplementedException();
-        }
+  
 
         public void Start() { }
 

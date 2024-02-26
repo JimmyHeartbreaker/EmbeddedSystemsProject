@@ -4,11 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GuitarWizardPro.WPF"
-        mc:Ignorable="d"
-        Title="MainWindow" >
-    <Grid Background="Black">
-        <Image x:Name="image" Width="1024" Height="500" Loaded="image_Loaded" >
+        
+       ResizeMode="NoResize"  Title="GuitarWizardPro" MaxWidth="1024" MaxHeight="710"  >
+    <StackPanel Background="Black" Margin="0,0,0,0">
+        <Grid Width="800" Height="120">
+            <Grid.Background>
+                <RadialGradientBrush RadiusX="0.5" RadiusY="0.5">
+                    <GradientStop Color="Yellow" Offset="0.0" />
+                    <GradientStop Color="Red" Offset="0.25" />
+                    <GradientStop Color="Blue" Offset="0.90" />
+                    <GradientStop Color="Black" Offset="1.0" />
+                </RadialGradientBrush>                
+            </Grid.Background>
+            <Image Source="/Content/title.png" >
+                
+            </Image>
+        </Grid>
+        <Image  Margin="0,0,0,0" x:Name="image" Width="1024" Height="500" Loaded="image_Loaded" >
             
         </Image>
-    </Grid>
+        <ListBox Height="50" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding TopFrequencies}" x:Name="FFTItems">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="100" BorderThickness="1" BorderBrush="Black">
+                        <TextBlock Text="{Binding}" FontSize="32">
+                        
+                        
+                        </TextBlock>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+           
+        </ListBox>
+    </StackPanel>
 </Window>

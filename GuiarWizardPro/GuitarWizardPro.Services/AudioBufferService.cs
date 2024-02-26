@@ -14,11 +14,11 @@ namespace GuitarWizardPro.Services
         public event EventHandler? BufferFull;
 
 
-        const int CAPACITY = 1024;
+        public const int CAPACITY = 1024;
         private unsafe short* buffer;
         private int bufferPosition = 0;
 
-        public unsafe Span<short> AudioBuffer => new(buffer, CAPACITY);
+        public unsafe short* AudioBuffer => buffer;
 
         public unsafe AudioBufferService(IAudioCapureService audioCapureService)
         {

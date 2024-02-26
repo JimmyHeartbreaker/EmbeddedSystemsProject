@@ -1,23 +1,14 @@
-﻿using GuitarWizardPro.Services.Interfaces;
+﻿
+using GuitarWizardPro.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Foundation;
-using Windows.Storage.Streams;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Platform;
-using Microsoft.VisualBasic;
 using GuitarWizardPro.Services;
-using Plugin.BLE.UWP;
-using Windows.UI.WebUI;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
-namespace GuitarWizardPro.Platforms.Windows
+namespace GuitarWizardPro.WPF
 {
     public class WifiAuthBLEService : Services.Interfaces.IWifiAuthBLEService
     {
@@ -28,18 +19,18 @@ namespace GuitarWizardPro.Platforms.Windows
         static byte[] securityType = Encoding.UTF8.GetBytes("WPA2-Personal");
         static byte[] encryptionType = Encoding.UTF8.GetBytes("AES");
 
-        public static GattLocalCharacteristicParameters GattParameters(string dsecription,byte[] value) => new()
+        public static GattLocalCharacteristicParameters GattParameters(string dsecription, byte[] value) => new()
         {
-            CharacteristicProperties =  GattCharacteristicProperties.Read ,
+            CharacteristicProperties = GattCharacteristicProperties.Read,
             ReadProtectionLevel = GattProtectionLevel.Plain,
             StaticValue = value.AsBuffer(),
-            
+
             UserDescription = dsecription
         };
 
         private GattServiceProvider? serviceProvider;
 
-        public WifiAuthBLEService() 
+        public WifiAuthBLEService()
         {
         }
 
@@ -68,10 +59,10 @@ namespace GuitarWizardPro.Platforms.Windows
             {
                 return false;
             }
-            
-            GattLocalCharacteristicResult result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.UsernameCharacteristic, GattParameters("Username",username));
-            
-            result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.PasswordCharacteristic, 
+
+            GattLocalCharacteristicResult result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.UsernameCharacteristic, GattParameters("Username", username));
+
+            result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.PasswordCharacteristic,
                 GattParameters("Password", password));
             result = await serviceProvider.Service.CreateCharacteristicAsync(BluetoothCharacteristicGuids.SSIDCharacteristic,
                 GattParameters("SSID", ssid));
@@ -93,7 +84,7 @@ namespace GuitarWizardPro.Platforms.Windows
                 // IsConnectable determines whether a call to publish will attempt to start advertising and 
                 // put the service UUID in the ADV packet (best effort)
                 IsConnectable = true,
-                
+
                 // IsDiscoverable determines whether a remote device can query the local device for support 
                 // of this service
                 IsDiscoverable = true
@@ -106,7 +97,7 @@ namespace GuitarWizardPro.Platforms.Windows
 
         private void Characteristic_ReadRequested(GattLocalCharacteristic sender, GattReadRequestedEventArgs args)
         {
-            
+
         }
 
         private void ServiceProvider_AdvertisementStatusChanged(GattServiceProvider sender, GattServiceProviderAdvertisementStatusChangedEventArgs args)
