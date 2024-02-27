@@ -1,10 +1,8 @@
 #pragma once
-
+#include "faults.h"
 
 
 namespace Audio::UDP
 {
-  bool StartServer();
-  void SendAudio(uint8_t* data, int length);
-
+  Faults::Fault* Send(uint8_t* data, int length);
 }

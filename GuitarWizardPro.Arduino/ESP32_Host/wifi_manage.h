@@ -1,10 +1,11 @@
 #pragma once
 
-
-
+#include "faults.h"
+using namespace Faults;
 namespace Wifi
 {
-  bool Host(char* ssid, char* password);
-  bool Connect(char* ssid, char* passkey);
+  Fault* Host(char* ssid, char* password);
+  Fault* Connect(char* ssid, char* passkey);
+  void Disconnect();
  
 }

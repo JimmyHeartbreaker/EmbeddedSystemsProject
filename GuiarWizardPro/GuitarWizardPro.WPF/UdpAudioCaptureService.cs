@@ -53,7 +53,7 @@ namespace GuitarWizardPro.WPF
                         fixed (byte* p = recieved.Buffer)
                         {
 
-                            AudioFrameProcessed?.Invoke(this, ((nint)p, 128));
+                            AudioFrameProcessed?.Invoke(this, ((nint)p, 512));
                             frames++;
                         }
                     }

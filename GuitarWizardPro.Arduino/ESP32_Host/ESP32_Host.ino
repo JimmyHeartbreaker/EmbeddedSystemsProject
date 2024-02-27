@@ -3,7 +3,13 @@
 #include "wifi_manage.h"
 #include "adc_audio.h"
 #include "udp_audio_server.h"
+#include "faults.h"
+#include <stdarg.h>
+#include <stdio.h>
+
 using namespace BT::LE::WifiInfo;
+using namespace Faults;
+
 WifiInfo wifiInfo;
 String ipAddresses[10];
 int ipAddressLength = 0;
@@ -13,17 +19,27 @@ enum State {
   NETWORK_DETAILS_FETCH,
   WIFI_CONNECT,
   WIFI_HOST,
-  UDP_SETUP,
-  ACTIVE
+  ADC_SETUP,
+  ACTIVE,
+  RESET
 } ;
 
 enum State state = State::OFF;
-
+bool waitingForResponse = false;
 void loop() 
 { 
   if(state == State::OFF)
-  {
+  { 
+    if(!waitingForResponse)
+    {
+     Serial.println("Please select 1 of the following options:");
+     Serial.println("h - Host a wifi access point with the SSID 'GuitarWizardPro'");
+     Serial.println("c - Connect to the hardcoded access point");
+     Serial.println("f - Fetch wifi details from a BLE service and connect to the provided access point");
+     waitingForResponse = true;
+    }
     int mode = Serial.read();
+    waitingForResponse = false;
     switch(mode)
     {
       case 'h':
@@ -35,7 +51,9 @@ void loop()
       case 'f':
         state = State::NETWORK_DETAILS_FETCH;
         break;
-      default:break;
+      default:
+        waitingForResponse = true;
+        break;
     }
     if(state!= State::OFF)
     {
@@ -43,6 +61,16 @@ void loop()
     }
     else
       return;
+  }
+  else if (Serial.available() > 0) {
+    int mode = Serial.read();
+    switch(mode)
+    {
+      case 'r':
+        state = State::RESET;
+        break;
+      default:break;
+    }
   }
 
   switch(state)
@@ -76,29 +104,58 @@ void loop()
     case State::WIFI_CONNECT:      
       Serial.println("WIFI_CONNECT::BEGIN");
       ipAddresses[0] = wifiInfo.ProviderIpAddress;
-      if(Wifi::Connect(wifiInfo.SSID,wifiInfo.SecurityKey))
+      if(Fault* fault = Wifi::Connect(wifiInfo.SSID,wifiInfo.SecurityKey))
       {
-        state = State::UDP_SETUP;
+        if(fault->ActionToTake == TERMINATE)
+        {
+          state = State::OFF;
+        }
+        else
+        {
+          return;
+        }
+      }
+      else
+      {        
+        state = State::ADC_SETUP;
       }
       Serial.println("WIFI_CONNECT::END");
       break;
     case State::WIFI_HOST:
       Serial.println("WIFI_HOST::BEGIN");
-      if(Wifi::Host("GuitarWizardPro2",NULL))
+      
+      if(Fault* fault = Wifi::Host("GuitarWizardPro",NULL))
       {
-        state = State::UDP_SETUP;
-      }      
+        if(fault->ActionToTake == TERMINATE)
+        {
+          state = State::OFF;
+        }
+        else
+        {
+          return;
+        }
+      }
+      else
+      {        
+        state = State::ADC_SETUP;
+      }
       Serial.println("WIFI_HOST::END");
       break;
-    case State::UDP_SETUP:
-      Serial.println("UDP_SETUP::BEGIN");
-      if(Audio::UDP::StartServer())
-      {
-        Audio::ADC::Setup(onBufferFull);     
+    case State::ADC_SETUP:
+      Serial.println("ADC_SETUP::BEGIN");
+      
+      Audio::ADC::Setup(onBufferFull);   
+      state = State::ACTIVE;      
+      Serial.println("ADC_SETUP::END");
+      break;      
+    case State::RESET:
+      Serial.println("RESET::BEGIN");
  
-        state = State::ACTIVE;
-      }
-      Serial.println("UDP_SETUP::END");
+      Wifi::Disconnect();
+      Audio::ADC::Teardown();
+      state = State::OFF;
+      
+      Serial.println("RESET::END");
       break;
     case State::ACTIVE:
       break;
@@ -107,7 +164,13 @@ void loop()
 int frames=0;
 void onBufferFull()
 {
-    Audio::UDP::SendAudio((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2);
+  if(Fault* fault = Audio::UDP::Send((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2))
+  {
+    if(fault->ActionToTake == TERMINATE)
+    {
+      state = RESET;
+    }
+  }  
 }
 void setup() 
 {

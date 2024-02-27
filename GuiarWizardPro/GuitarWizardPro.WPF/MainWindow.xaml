@@ -8,14 +8,14 @@
        ResizeMode="NoResize"  SizeToContent="WidthAndHeight"   Title="GuitarWizardPro" >
     <StackPanel Background="Black" Height="670" >
         <Grid Width="800" Height="120">
-            <Grid.Background>
+            <!--<Grid.Background>
                 <RadialGradientBrush RadiusX="0.5" RadiusY="0.5">
                     <GradientStop Color="Yellow" Offset="0.0" />
                     <GradientStop Color="Red" Offset="0.25" />
                     <GradientStop Color="Blue" Offset="0.90" />
                     <GradientStop Color="Black" Offset="1.0" />
                 </RadialGradientBrush>                
-            </Grid.Background>
+            </Grid.Background>-->
             <Image Source="/Content/title2.png" >
                 
             </Image>

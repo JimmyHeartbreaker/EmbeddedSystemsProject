@@ -1,59 +1,55 @@
 #include "udp_audio_server.h" 
 #include <WiFi.h>
-
+#include "faults.h"
 #include "AsyncUDP.h"
-
+using namespace Faults;
 namespace Audio::UDP
 {
+#pragma region Faults  
+  int logId = rand();
+
+  Fault failedStartServer =
+  {
+    .ActionToTake = RETRY,
+    .Reason = "Could not connect to server",
+    .LogId = logId
+  };
+  Fault failedSend =
+  {
+    .ActionToTake = RETRY,
+    .Reason = "udp.writeTo failed",
+    .LogId = logId
+  };
+  Fault critErrorSend =
+  {
+    .ActionToTake = TERMINATE,
+    .Reason = "udp.writeTo error rate > 10%",
+    .LogId = logId
+  };
+#pragma endregion
 
   AsyncUDP udp;
   IPAddress addr(224,1,2,3);
-  bool StartServer()
+
+  Fault* Send(uint8_t* data, int length)
   {
-     if(udp.listenMulticast(IPAddress(224,1,2,3), 1234)) {
-        Serial.print("UDP Listening on IP: ");
-        Serial.println(WiFi.localIP());
+    static float successCount=0;
+    static int errorCount=0;
+    if(!udp.writeTo(data, length,addr, 1234))
+    {
+      errorCount++;
       
-      return true;
+      double errorRate = errorCount/(successCount+errorCount)*100.0;
       
+      if(errorRate<10)
+      {
+        return printFault(&failedSend,"Send failed with data length %i",length);
+      }
+      return printFault(&critErrorSend,"Send failed with data length %i. Error rate over 10%",length);
     }
-    return false;
-  }
-  void SendAudio(uint8_t* data, int length)
-  {
-    udp.writeTo(data, length,addr, 1234);
+    
+    successCount++;
+    
+    return NULL;
   }
 }
-
-
-// #include "udp_audio_server.h" 
-// #include <WiFi.h>
-// #include <WiFiUdp.h>
-
-// namespace Audio::UDP
-// {
-//   WiFiUDP Udp;
-//  // AsyncUDP udp;
-//   IPAddress addr(224,1,2,3);
-//   bool StartServer()
-//   {
-//     Udp.beginMulticast(addr,1234);
-//     // if(udp.listenMulticast(IPAddress(224,1,2,3), 1234)) {
-//     //    Serial.print("UDP Listening on IP: ");
-//     //    Serial.println(WiFi.localIP());
-      
-//     //  return true;
-      
-    
-//     return false;
-//   }
-//   void SendAudio(uint8_t* data, int length)
-//   {
-//     Udp.beginPacket(addr, 1234);
-
-//     Udp.write(data,length);
-
-//     Udp.endPacket();
-//    // udp.writeTo(data, length,addr, 1234);
-//   }
-// }

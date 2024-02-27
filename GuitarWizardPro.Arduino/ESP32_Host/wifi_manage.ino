@@ -2,50 +2,94 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
+#include "faults.h"
+
+using namespace Faults;
 
 namespace Wifi
 {
+ 
+#pragma region Faults  
+  int logId = rand();
 
-  //WiFiServer  server(80);  
-  bool Host(char* ssid, char* password)
-  { 
-    
+  Fault failedHost =
+  {
+    .ActionToTake = TERMINATE,
+    .Reason = "Could not start soft access point",
+    .LogId = logId
+  };
+  
+  Fault parameterFault =
+  {
+    .ActionToTake = TERMINATE,
+    .Reason = "parameter is null",
+    .LogId = logId
+  };
+
+  Fault failedConnect =
+  {
+    .ActionToTake = TERMINATE,
+    .Reason = "Could not connect to wifi access point",
+    .LogId = logId
+  };
+
+#pragma endregion
+
+  Fault* Host(char* ssid, char* password)
+  {    
+    if(!ssid)
+      return printFault(&parameterFault,"SSID is null");      
+
     if (!WiFi.softAP(ssid, password)) 
     {
-      Serial.println("Soft AP creation failed.");
-      while(1);
+      return printFault(&failedHost,"Soft AP creation failed. SSID:'%s', passkey:'%s'",ssid,password);         
     }
     IPAddress myIP = WiFi.softAPIP();
     Serial.print("AP IP address: ");
     Serial.println(myIP);
-     //server.begin();
-    delay(2000);
-    Serial.println("Server started");
-    return true;
+    return NULL;
   }
 
-  bool Connect(char* ssid, char* passkey)
-  {
-    
-    Serial.println();
-    Serial.println("******************************************************");
+  Fault* Connect(char* ssid, char* passkey)
+  {        
+    if(!ssid)
+      return printFault(&parameterFault,"SSID is null");
+
     Serial.print("Connecting to ");
     Serial.println(ssid);
 
     WiFi.begin(ssid, passkey);
-
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
+    int status;
+    do 
+    {
+      delay(500);
+      status = WiFi.status();
+      switch(status)
+      {
+        case WL_CONNECT_FAILED:
+        case WL_NO_SSID_AVAIL:
+        case WL_CONNECTION_LOST:
+        case WL_NO_SHIELD:
+        case WL_SCAN_COMPLETED:
+          return printFault(&failedConnect,"Could not connect to WiFi. SSID:'%s', passkey:'%s', status:%i",ssid,passkey,status);          
+        case WL_IDLE_STATUS:
+        case WL_DISCONNECTED: 
+          break;
+      } 
+    }while(status != WL_CONNECTED);
 
     Serial.println("");
     Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
 
-   
+    return NULL;
+  }  
 
-    return true;
+  void Disconnect()
+  {
+    Serial.println("WiFi disconnecting...");
+    WiFi.disconnect();
+    Serial.println("WiFI disconnected");
   }
 }

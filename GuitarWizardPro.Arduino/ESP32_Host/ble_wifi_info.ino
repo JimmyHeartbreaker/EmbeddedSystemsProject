@@ -34,7 +34,10 @@ int FindDevicesWithService(const String uuid, BLEDevice** foundDevices) {
   int arrayLength = 2;
 
   (*foundDevices) = (BLEDevice*)malloc(sizeof(BLEDevice) * arrayLength);  //start with a legnth of 2 because we only expect 2 in our demo
-
+  if(!foundDevices)
+  {
+    
+  }
   int deviceCount = 0;
   int iterations = 0;
   while (iterations++ < 5) {
