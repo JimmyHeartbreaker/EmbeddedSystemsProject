@@ -6,6 +6,11 @@ namespace Faults
   
   Fault* printFault(Fault* fault, char* format, ...)
   {    
+    if(!fault)
+    {
+        Serial.println("Parameter fault is null");
+        return NULL;
+    }
     va_list args;
     Serial.println("** Fault Log **");    
     if(format)

@@ -26,6 +26,16 @@ namespace GuitarWizardPro.Services
             audioCapureService.AudioFrameProcessed += AudioCapureService_AudioFrameProcessed;
             primaryBuffer = (short*)Marshal.AllocHGlobal(2 * CAPACITY);
             secondaryBuffer = (short*)Marshal.AllocHGlobal(2 * CAPACITY);
+            Task.Factory.StartNew(OnBufferFull);
+        }
+        SemaphoreSlim _semaphore = new SemaphoreSlim(0);
+        private async Task OnBufferFull()
+        {
+            while(true)
+            {
+                await _semaphore.WaitAsync();
+                BufferFull?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private unsafe void SwapBuffers()
@@ -48,9 +58,8 @@ namespace GuitarWizardPro.Services
                 bufferPosition += copyLen;
                 if (bufferPosition == CAPACITY)
                 {
-                    
-                    BufferFull?.Invoke(this, EventArgs.Empty);
                     SwapBuffers();
+                    _semaphore.Release();
                 }
             }
         }

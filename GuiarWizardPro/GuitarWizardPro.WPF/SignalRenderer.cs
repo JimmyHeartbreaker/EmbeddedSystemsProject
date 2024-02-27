@@ -116,7 +116,7 @@ namespace GuitarWizardPro.WPF
             Action<double, double> plotFunction = antialiasing ? plotAntiAliasedPoint : plotPoint;
 
             Unsafe.InitBlockUnaligned(ptr, 0, (uint)byteLength);
-            var zoom = 1;
+            var zoom = 4;
             for (int i = 0; i < AudioBufferService.CAPACITY / zoom - 1; i++)
             {
                 var y0 = 498 - (int)(buffer[i] * scaler);

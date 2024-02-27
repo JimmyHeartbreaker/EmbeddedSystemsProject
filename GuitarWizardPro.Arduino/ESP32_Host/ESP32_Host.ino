@@ -161,7 +161,7 @@ void loop()
       break;
   }
 }
-int frames=0;
+
 void onBufferFull()
 {
   if(Fault* fault = Audio::UDP::Send((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2))
@@ -174,13 +174,10 @@ void onBufferFull()
 }
 void setup() 
 {
-  delay(2000);
   Serial.begin(115200);
-  Serial.println("Setup started");
 
   wifiInfo.SSID = "VM5678927_EXT";
   wifiInfo.ProviderIpAddress = "192.168.0.56";
   wifiInfo.SecurityKey = "jjbhpqDHs5xz";
 
-  Serial.println("Setup Finished");
 }
