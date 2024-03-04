@@ -1,6 +1,7 @@
 #include "faults.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <Arduino.h>
 namespace Faults
 {
   

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <stdarg.h>
 #include <stdio.h>
 namespace Faults
@@ -14,7 +13,6 @@ namespace Faults
   struct Fault
   {
     FaultAction ActionToTake;
-    int RetryDelayMs;  
     char* Reason;
     int LogId;
   };

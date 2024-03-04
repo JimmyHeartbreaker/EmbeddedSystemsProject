@@ -19,3 +19,5 @@
 /GuiarWizardPro/GuitarWizardPro.WinForms/bin/Debug/net8.0-windows
 /GuiarWizardPro/GuitarWizardPro.Console/bin/Debug/net8.0-windows
 /GuiarWizardPro/GuitarWizardPro.WPF/bin/Debug/net8.0-windows10.0.22621.0
+/libraries/ArduinoBLE/extras/test/src/Arduino.cpp
+/libraries/ArduinoBLE/*

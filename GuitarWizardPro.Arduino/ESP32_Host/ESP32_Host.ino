@@ -1,6 +1,6 @@
 
 #include "ble_wifi_info.h"
-#include "wifi_manage.h"
+#include "wifi_manage.h" 
 #include "adc_audio.h"
 #include "udp_audio_server.h"
 #include "faults.h"
@@ -24,7 +24,7 @@ enum State {
   RESET
 } ;
 
-enum State state = State::OFF;
+enum State state = State::WIFI_CONNECT;
 bool waitingForResponse = false;
 void loop() 
 { 
@@ -32,11 +32,11 @@ void loop()
   { 
     if(!waitingForResponse)
     {
-     Serial.println("Please select 1 of the following options:");
-     Serial.println("h - Host a wifi access point with the SSID 'GuitarWizardPro'");
-     Serial.println("c - Connect to the hardcoded access point");
-     Serial.println("f - Fetch wifi details from a BLE service and connect to the provided access point");
-     waitingForResponse = true;
+      Serial.println("Please select 1 of the following options:");
+      Serial.println("h - Host a wifi access point with the SSID 'GuitarWizardPro'");
+      Serial.println("c - Connect to the hardcoded access point");
+      Serial.println("f - Fetch wifi details from a BLE service and connect to the provided access point");
+      waitingForResponse = true;
     }
     int mode = Serial.read();
     waitingForResponse = false;

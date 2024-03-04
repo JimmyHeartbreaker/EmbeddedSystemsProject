@@ -13,7 +13,7 @@ namespace Audio::ADC
   int16_t* SecondaryBuffer;
   int16_t writeBufPos = 0;
   void (*onBufferFullEvent)();
-  SemaphoreHandle_t  sema_v; 
+  SemaphoreHandle_t  semaOnBufferFull; 
  
   void swapBuffers()
   {
@@ -26,7 +26,7 @@ namespace Audio::ADC
   {
     while(true)
     {
-      xSemaphoreTake( sema_v,pdMS_TO_TICKS(100000) );  
+      xSemaphoreTake( semaOnBufferFull,pdMS_TO_TICKS(100000) );  
       onBufferFullEvent();  
     }
   }
@@ -52,7 +52,7 @@ namespace Audio::ADC
     adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_11);
     analogRead(ADC1_CHANNEL_0);
     setCpuFrequencyMhz(240);
-    sema_v = xSemaphoreCreateBinary();
+    semaOnBufferFull = xSemaphoreCreateBinary();
     onBufferFullEvent = pOnBufferFullEvent;
     PrimaryBuffer = (int16_t*)malloc(BUFFER_SIZE*2);
     SecondaryBuffer =  (int16_t*)malloc(BUFFER_SIZE*2);

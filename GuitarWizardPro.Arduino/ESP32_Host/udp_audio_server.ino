@@ -1,7 +1,14 @@
+/*
+this is the implementation for audio over udp.
+the goals are to be real time and no breaks in the audio
+
+*/
+
 #include "udp_audio_server.h" 
 #include <WiFi.h>
 #include "faults.h"
 #include "AsyncUDP.h"
+
 using namespace Faults;
 namespace Audio::UDP
 {

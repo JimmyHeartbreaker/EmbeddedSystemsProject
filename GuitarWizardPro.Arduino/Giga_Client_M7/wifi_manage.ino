@@ -1,6 +1,5 @@
 #include "wifi_manage.h" 
 #include <WiFi.h>
-#include <WiFiAP.h>
 #include "faults.h"
 
 using namespace Faults;
@@ -13,40 +12,35 @@ namespace Wifi
 
   Fault failedHost =
   {
-    .ActionToTake = TERMINATE,
-    .Reason = "Could not start soft access point",
-    .LogId = logId
+    ActionToTake : TERMINATE,
+    Reason : "Could not start soft access point",
+    LogId : logId
   };
   
   Fault parameterFault =
   {
-    .ActionToTake = TERMINATE,
-    .Reason = "parameter is null",
-    .LogId = logId
+    ActionToTake : TERMINATE,    
+    Reason : "parameter is null",
+    LogId : logId
   };
 
   Fault failedConnect =
   {
-    .ActionToTake = TERMINATE,
-    .Reason = "Could not connect to wifi access point",
-    .LogId = logId
+    ActionToTake : TERMINATE,
+    Reason : "Could not connect to wifi access point",
+    LogId : logId
   };
-
+Fault notImplemented =
+  {
+    ActionToTake : TERMINATE,
+    Reason : "Wifi hosting is not implemented here",
+    LogId : logId
+  };
 #pragma endregion
 
   Fault* Host(char* ssid, char* password)
   {    
-    if(!ssid)
-      return printFault(&parameterFault,"SSID is null");      
-
-    if (!WiFi.softAP(ssid, password)) 
-    {
-      return printFault(&failedHost,"Soft AP creation failed. SSID:'%s', passkey:'%s'",ssid,password);         
-    }
-    IPAddress myIP = WiFi.softAPIP();
-    Serial.print("AP IP address: ");
-    Serial.println(myIP);
-    return NULL;
+    return &notImplemented;
   }
 
   Fault* Connect(char* ssid, char* passkey)
@@ -54,6 +48,11 @@ namespace Wifi
     if(!ssid)
       return printFault(&parameterFault,"SSID is null");
 
+    if (WiFi.status() == WL_NO_MODULE) {
+      Serial.println("Communication with WiFi module failed!");
+      // don't continue
+      while (true);
+    }
     Serial.print("Connecting to ");
     Serial.println(ssid);
 
