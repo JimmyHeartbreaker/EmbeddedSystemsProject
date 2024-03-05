@@ -162,13 +162,7 @@ void loop()
 
 void onBufferFull()
 {
-  if(Fault* fault = Audio::UDP::Send((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2))
-  {
-    if(fault->ActionToTake == TERMINATE)
-    {
-      state = RESET;
-    }
-  }  
+  HandleFault(Audio::UDP::Send((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2));
 }
 void setup() 
 {
