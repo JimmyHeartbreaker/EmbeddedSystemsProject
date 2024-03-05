@@ -33,7 +33,6 @@ void loop()
 { 
   RPC_MPI::ProcessMessages();
 
-  delay(500);
   if(state == State::OFF)
   { 
     int mode = Serial.read();
@@ -85,48 +84,55 @@ void loop()
       Serial.println("UDP_SETUP::END");
       break;
     case State::ACTIVE:
+      
+      Serial.println("ACTIVE::BEGIN");
       int length = Audio::UDP::Receive((char*)secondaryAudioBuffer);
-      if(HAL_HSEM_FastTake(HSEM_ID_0))
+      if(length>0)
       {
+        Serial.println("audio received");
+        while(HAL_HSEM_FastTake(HSEM_ID_0)!=HAL_OK)
+        {}
+        
         int16_t* temp =  sharedAppData->PrimaryAudioBuffer;
         sharedAppData->PrimaryAudioBuffer = secondaryAudioBuffer;
         sharedAppData->PrimaryAudioBufferLength = length;
+        
         secondaryAudioBuffer = temp;
+        sharedAppData->dataAvailable = true;
         HAL_HSEM_Release(HSEM_ID_0,0);
       }
+      Serial.println("ACTIVE::END");
     break;
   }
 }
 void receiveAppDataPtr(Message& m)
 { 
   Serial.println("received ptr to shared appData");
-   
-  sharedAppData = (Shared::AppData*)m.data;
+  
+  sharedAppData = ((Shared::AppData**)m.data)[0];
 }
 
 void printMessageFromM4(Message& m)
 {  
-  Serial.println("<M4>");
-  Serial.println(m.data);  
+  Serial.print("<M4>");
+  Serial.print(m.data);  
   Serial.println("</M4>");
 }
 void setup() 
 { 
   Serial.begin(115200);    
   delay(5000);
-  secondaryAudioBuffer = (int16_t*)malloc(1024);  
+  secondaryAudioBuffer = (int16_t*)malloc(64);  
   RPC_MPI::RegisterMessageHandler(Shared::APPDATA_RECIEVE,receiveAppDataPtr);
   RPC_MPI::RegisterMessageHandler(RPC_MPI::SERIAL_OUT,printMessageFromM4);
    
   if(RPC.begin())
   {
-
     __HAL_RCC_HSEM_CLK_ENABLE();
 
     HAL_NVIC_SetPriority(HSEM1_IRQn, 0, 1);
     HAL_NVIC_EnableIRQ(HSEM1_IRQn);
-    // HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
-         
+        
     Serial.println("RPC started");
   }
   else

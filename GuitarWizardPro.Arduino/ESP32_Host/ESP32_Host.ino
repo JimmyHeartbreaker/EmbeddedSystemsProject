@@ -10,6 +10,7 @@
 using namespace BT::LE::WifiInfo;
 using namespace Faults;
 
+const char* AP_HOSTNAME = "GuitarWizardPro";
 WifiInfo wifiInfo;
 String ipAddresses[10];
 int ipAddressLength = 0;
@@ -24,8 +25,25 @@ enum State {
   RESET
 } ;
 
-enum State state = State::WIFI_CONNECT;
+
+enum State initialState = State::WIFI_HOST;
+enum State state = State::WIFI_HOST;
 bool waitingForResponse = false;
+
+
+bool HandleFault(Fault* f)
+{
+  if(f)
+  {
+    if(f->ActionToTake == TERMINATE)
+    {
+      state = State::OFF;
+    }
+    return true;
+  }
+  return false;
+}
+
 void loop() 
 { 
   if(state == State::OFF)
@@ -104,39 +122,19 @@ void loop()
     case State::WIFI_CONNECT:      
       Serial.println("WIFI_CONNECT::BEGIN");
       ipAddresses[0] = wifiInfo.ProviderIpAddress;
-      if(Fault* fault = Wifi::Connect(wifiInfo.SSID,wifiInfo.SecurityKey))
+
+      if(!HandleFault(Wifi::Connect(wifiInfo.SSID,wifiInfo.SecurityKey)))
       {
-        if(fault->ActionToTake == TERMINATE)
-        {
-          state = State::OFF;
-        }
-        else
-        {
-          return;
-        }
-      }
-      else
-      {        
-        state = State::ADC_SETUP;
-      }
+        state = State::ADC_SETUP;            
+      } 
+      
       Serial.println("WIFI_CONNECT::END");
       break;
     case State::WIFI_HOST:
       Serial.println("WIFI_HOST::BEGIN");
       
-      if(Fault* fault = Wifi::Host("GuitarWizardPro",NULL))
+      if(!HandleFault(Wifi::Host(AP_HOSTNAME,NULL)))
       {
-        if(fault->ActionToTake == TERMINATE)
-        {
-          state = State::OFF;
-        }
-        else
-        {
-          return;
-        }
-      }
-      else
-      {        
         state = State::ADC_SETUP;
       }
       Serial.println("WIFI_HOST::END");
@@ -153,7 +151,7 @@ void loop()
  
       Wifi::Disconnect();
       Audio::ADC::Teardown();
-      state = State::OFF;
+      state = initialState;
       
       Serial.println("RESET::END");
       break;

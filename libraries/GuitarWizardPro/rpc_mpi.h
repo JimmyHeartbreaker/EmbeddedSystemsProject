@@ -1,3 +1,4 @@
+#if defined(CORE_CM7) || defined(CORE_CM4) 
 #pragma once
 #include "Arduino.h"
 
@@ -24,3 +25,4 @@ namespace RPC_MPI
  void RegisterMessageHandler(char code, void(*functionPtr)(Message&));
   
 }
+#endif

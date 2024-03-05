@@ -34,7 +34,7 @@ namespace Wifi
 
 #pragma endregion
 
-  Fault* Host(char* ssid, char* password)
+  Fault* Host(const char* ssid, char* password)
   {    
     if(!ssid)
       return printFault(&parameterFault,"SSID is null");      

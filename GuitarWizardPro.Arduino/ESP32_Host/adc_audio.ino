@@ -40,7 +40,7 @@ namespace Audio::ADC
     { 
       writeBufPos = 0;
       swapBuffers();
-      xSemaphoreGiveFromISR(sema_v, NULL);
+      xSemaphoreGiveFromISR(semaOnBufferFull, NULL);
     }
 
     portEXIT_CRITICAL_ISR(&timerMux);
@@ -49,7 +49,7 @@ namespace Audio::ADC
   void Setup(void (*pOnBufferFullEvent)())
   {  
     adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_11);
+    adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_2_5);    
     analogRead(ADC1_CHANNEL_0);
     setCpuFrequencyMhz(240);
     semaOnBufferFull = xSemaphoreCreateBinary();
@@ -73,6 +73,6 @@ namespace Audio::ADC
     free(PrimaryBuffer);
     free(SecondaryBuffer);
     onBufferFullEvent = NULL;
-    vSemaphoreDelete(sema_v);    
+    vSemaphoreDelete(semaOnBufferFull);    
   }
 }

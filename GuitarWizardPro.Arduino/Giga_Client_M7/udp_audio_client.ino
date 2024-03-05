@@ -20,7 +20,7 @@ namespace Audio::UDP
   {
     int packetSize = udp.parsePacket();
     if (packetSize) {
-      return udp.read(buffer, 512); 
+      return udp.read(buffer, 64); 
     }
     return NULL;
   }
