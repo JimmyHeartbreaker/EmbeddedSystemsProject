@@ -17,6 +17,7 @@ namespace GuitarWizardPro.WPF
         public UdpAudioCaptureService()
         {
             udpClient = new UdpClient(1234,AddressFamily.InterNetwork);
+          
             udpClient.JoinMulticastGroup(new IPAddress(new byte[] { 224, 1, 2, 3 }));
         }
 
@@ -53,7 +54,7 @@ namespace GuitarWizardPro.WPF
                         fixed (byte* p = recieved.Buffer)
                         {
 
-                            AudioFrameProcessed?.Invoke(this, ((nint)p, 512));
+                            AudioFrameProcessed?.Invoke(this, ((nint)p, 1000));
                             frames++;
                         }
                     }

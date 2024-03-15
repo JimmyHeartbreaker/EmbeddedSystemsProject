@@ -1,21 +1,16 @@
 #include "wifi_manage.h"
 #include "udp_audio_client.h"
-#include <RPC.h>
-#include "rpc_mpi.h"
+#include "dac_audio.h"
 #include "shared.h"
-using namespace RPC_MPI;
 
 enum State {
   OFF,
   WIFI_CONNECT,
-  UDP_SETUP,
+  AUDIO_SETUP,
   ACTIVE
 };
 
-Shared::AppData* sharedAppData;
-int16_t* secondaryAudioBuffer;
 enum State state = State::OFF;
-
 bool HandleFault(Fault* f)
 {
   if(f)
@@ -28,115 +23,60 @@ bool HandleFault(Fault* f)
   }
   return false;
 }
-
+bool high=true;
+void PullDataFromUDPToDAC(uint16_t* buffer)
+{
+  int length=0;
+  do
+  {
+    length  = Audio::UDP::Receive(buffer,Shared::SAMPLES_PER_PACKET*2);
+  }while(length<=0);
+}
 void loop() 
 { 
-  RPC_MPI::ProcessMessages();
-
-  if(state == State::OFF)
-  { 
-    int mode = Serial.read();
-    
-    switch(mode)
-    {
-      case 'c':        
-        state= State::WIFI_CONNECT;
-        break;
-        
-      case 't':        
-        while(HAL_HSEM_FastTake(HSEM_ID_0)!=HAL_OK)
-        {
-        }
-        
-        Serial.println("Semaphore acquired M7");
-        break;
-        
-      case 'r':        
-        HAL_HSEM_Release(HSEM_ID_0,0);    
-        break;
-      default:
-        break;
-    }
-    if(state!= State::OFF)
-    {
-      Serial.println("started");
-    }
-    else
-      return;
-  }
-
   switch(state)
   {
+    case State::OFF:
+      {
+      //  int mode = Serial.read();
+      
+      //  if(mode=='c')
+      //  {    
+            state= State::WIFI_CONNECT;       
+      //  }
+        if(state!= State::OFF)
+        {
+          Serial.println("started");
+        }
+        break;
+      }
     case State::WIFI_CONNECT:      
       Serial.println("WIFI_CONNECT::BEGIN");
-      //if(Fault* fault = Wifi::Connect("VM5678927_EXT","jjbhpqDHs5xz"))
+      //if(!HandleFault(Wifi::Connect("VM5678927","jjbhpqDHs5xz")))
       if(!HandleFault(Wifi::Connect("GuitarWizardPro",NULL)))
       {
-        state = State::UDP_SETUP;            
-      } 
+        state = State::AUDIO_SETUP;            
+      }
 
       Serial.println("WIFI_CONNECT::END");
       break;
-    case State::UDP_SETUP:
-      Serial.println("UDP_SETUP::BEGIN");
-      Audio::UDP::Setup();      
+    case State::AUDIO_SETUP:
+      Serial.println("AUDIO_SETUP::BEGIN");
+      Audio::UDP::Setup();     
+   
+      Audio::D2AC::Setup(PullDataFromUDPToDAC,Shared::SAMPLES_PER_PACKET);     
       state = State::ACTIVE;      
-      Serial.println("UDP_SETUP::END");
+      Serial.println("AUDIO_SETUP::END");
       break;
     case State::ACTIVE:
-      
-      Serial.println("ACTIVE::BEGIN");
-      int length = Audio::UDP::Receive((char*)secondaryAudioBuffer);
-      if(length>0)
-      {
-        Serial.println("audio received");
-        while(HAL_HSEM_FastTake(HSEM_ID_0)!=HAL_OK)
-        {}
-        
-        int16_t* temp =  sharedAppData->PrimaryAudioBuffer;
-        sharedAppData->PrimaryAudioBuffer = secondaryAudioBuffer;
-        sharedAppData->PrimaryAudioBufferLength = length;
-        
-        secondaryAudioBuffer = temp;
-        sharedAppData->dataAvailable = true;
-        HAL_HSEM_Release(HSEM_ID_0,0);
-      }
-      Serial.println("ACTIVE::END");
+      Audio::D2AC::SendToOutput();
     break;
   }
 }
-void receiveAppDataPtr(Message& m)
-{ 
-  Serial.println("received ptr to shared appData");
-  
-  sharedAppData = ((Shared::AppData**)m.data)[0];
-}
 
-void printMessageFromM4(Message& m)
-{  
-  Serial.print("<M4>");
-  Serial.print(m.data);  
-  Serial.println("</M4>");
-}
 void setup() 
 { 
   Serial.begin(115200);    
   delay(5000);
-  secondaryAudioBuffer = (int16_t*)malloc(64);  
-  RPC_MPI::RegisterMessageHandler(Shared::APPDATA_RECIEVE,receiveAppDataPtr);
-  RPC_MPI::RegisterMessageHandler(RPC_MPI::SERIAL_OUT,printMessageFromM4);
-   
-  if(RPC.begin())
-  {
-    __HAL_RCC_HSEM_CLK_ENABLE();
-
-    HAL_NVIC_SetPriority(HSEM1_IRQn, 0, 1);
-    HAL_NVIC_EnableIRQ(HSEM1_IRQn);
-        
-    Serial.println("RPC started");
-  }
-  else
-  {          
-    Serial.println("RPC failed");
-  }
+   Serial.println("Started"); 
 }

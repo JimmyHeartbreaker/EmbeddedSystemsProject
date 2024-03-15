@@ -1,0 +1,22 @@
+Circuit: * D:\_DOCUMENTS\Embedded Systems\EmbeddedSystemsProject\CircuitDesign\Draft1.asc
+
+Direct Newton iteration for .op point succeeded.
+
+Date: Wed Mar  6 17:02:48 2024
+Total elapsed time: 0.131 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 7323
+traniter = 7320
+tranpoints = 3661
+accept = 2432
+rejected = 1229
+matrix size = 4
+fillins = 0
+solver = Normal
+Avg thread counts: 1.8/2.6/2.6/1.8
+Matrix Compiler1:       7 opcodes  0.1/[0.1]/0.2
+Matrix Compiler2: off  [0.1]/0.1/0.1
+

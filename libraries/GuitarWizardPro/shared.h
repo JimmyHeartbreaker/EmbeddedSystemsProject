@@ -2,12 +2,16 @@
 
 namespace Shared
 {
+    const int SAMPLES_PER_PACKET = 500;
     
-    const char APPDATA_RECIEVE='a';
-    struct AppData
-    {
-        int16_t* PrimaryAudioBuffer;
-        int PrimaryAudioBufferLength;
-        bool dataAvailable=false;
-    };
+}
+
+extern "C" {
+
+
+
+//  void DMA1_Stream4_IRQHandler(DMA_HandleTypeDef* dma)  {
+//      HAL_DMA_IRQHandler(dma); 
+//    }
+
 }

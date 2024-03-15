@@ -60,6 +60,12 @@
     "string": "cpp",
     "string_view": "cpp",
     "*.tcc": "cpp",
-    "system_error": "cpp"
-  }
+    "system_error": "cpp",
+    "cstdint": "cpp",
+    "compare": "cpp",
+    "array": "cpp",
+    "initializer_list": "cpp",
+    "cstdlib": "cpp"
+  },
+  "cmake.configureOnOpen": false
 }

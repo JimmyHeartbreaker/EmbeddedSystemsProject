@@ -141,8 +141,10 @@ void loop()
       break;
     case State::ADC_SETUP:
       Serial.println("ADC_SETUP::BEGIN");
-      
+       
+      Audio::UDP::Setup();
       Audio::ADC::Setup(onBufferFull);   
+     
       state = State::ACTIVE;      
       Serial.println("ADC_SETUP::END");
       break;      
@@ -158,17 +160,17 @@ void loop()
     case State::ACTIVE:
       break;
   }
-}
-
+}   
 void onBufferFull()
 {
-  HandleFault(Audio::UDP::Send((uint8_t*)Audio::ADC::PrimaryBuffer,Audio::ADC::BUFFER_SIZE*2));
+  HandleFault(Audio::UDP::Send(Audio::ADC::PrimaryBuffer));
 }
 void setup() 
 {
   Serial.begin(115200);
-
-  wifiInfo.SSID = "VM5678927_EXT";
+  delay(5000);
+  Serial.println("started");
+  wifiInfo.SSID = "VM5678927";
   wifiInfo.ProviderIpAddress = "192.168.0.56";
   wifiInfo.SecurityKey = "jjbhpqDHs5xz";
 

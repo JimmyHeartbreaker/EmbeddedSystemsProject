@@ -14,7 +14,7 @@ namespace GuitarWizardPro.Services
         public event EventHandler? BufferFull;
 
 
-        public const int CAPACITY = 1024;
+        public const int CAPACITY = 1000;
         private unsafe short* primaryBuffer;
         private unsafe short* secondaryBuffer;
         private int bufferPosition = 0;

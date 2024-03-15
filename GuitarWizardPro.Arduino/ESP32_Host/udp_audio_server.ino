@@ -7,7 +7,7 @@ the goals are to be real time and no breaks in the audio
 #include "udp_audio_server.h" 
 #include <WiFi.h>
 #include "faults.h"
-#include "AsyncUDP.h"
+#include "AsyncUDP_2.h"
 
 using namespace Faults;
 namespace Audio::UDP
@@ -35,14 +35,19 @@ namespace Audio::UDP
   };
 #pragma endregion
 
-  AsyncUDP udp;
+  AsyncUDP2 udp;
   IPAddress addr(224,1,2,3);
 
-  Fault* Send(uint8_t* data, int length)
+  
+  void Setup()
+  {
+    udp.connect(addr,1234);
+  }
+  Fault* Send(pbuf* data)
   {
     static float successCount=0;
     static int errorCount=0;
-    if(!udp.writeTo(data, length,addr, 1234))
+    if(!udp.writeBuf(data))
     {
       errorCount++;
       
@@ -50,13 +55,15 @@ namespace Audio::UDP
       
       if(errorRate<10)
       {
-        return printFault(&failedSend,"Send failed with data length %i",length);
+        return printFault(&failedSend,"Send failed with data length %i",data->len);
       }
-      return printFault(&critErrorSend,"Send failed with data length %i. Error rate over 10%",length);
+      return printFault(&critErrorSend,"Send failed with data length %i. Error rate over 10%",data->len);
     }
     
-    successCount++;
+    //successCount++;
     
     return NULL;
   }
 }
+
+

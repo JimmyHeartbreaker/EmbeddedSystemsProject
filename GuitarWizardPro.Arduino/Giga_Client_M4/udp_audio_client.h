@@ -5,5 +5,5 @@
 namespace Audio::UDP
 {
   void Setup();
-  int Receive(void* buffer, int length);
+  int Receive(char* buffer);
 }

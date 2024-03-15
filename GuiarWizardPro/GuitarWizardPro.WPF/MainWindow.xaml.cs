@@ -26,7 +26,7 @@ namespace GuitarWizardPro.WPF
         private readonly UdpAudioCaptureService udpAudioCaptureService;
         private readonly AudioBufferService audioBufferService;
         private readonly SignalRenderer signalRenderer;
-        private readonly int width = 1024;
+        private readonly int width = 1000;
         private readonly int height = 500;
         private readonly FFTService fFTService;
         private readonly WifiAuthBLEService wifiAuthBLEService;

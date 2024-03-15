@@ -1,8 +1,10 @@
 #pragma once
 #include "faults.h"
+#include "lwip/priv/tcpip_priv.h"
 
 
 namespace Audio::UDP
 {
-  Faults::Fault* Send(uint8_t* data, int length);
+  void Setup();
+  Faults::Fault* Send(pbuf* buf);
 }

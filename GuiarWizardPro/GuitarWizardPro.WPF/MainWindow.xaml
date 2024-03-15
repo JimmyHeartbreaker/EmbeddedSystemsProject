@@ -20,7 +20,7 @@
                 
             </Image>
         </Grid>
-        <Image  Margin="0,0,0,0" x:Name="image" Width="1024" Height="500" Loaded="image_Loaded" >
+        <Image  Margin="0,0,0,0" x:Name="image" Width="1000" Height="500" Loaded="image_Loaded" >
             
         </Image>
         <ListBox Background="Black" Height="50" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding TopFrequencies}" x:Name="FFTItems" BorderBrush="Black">

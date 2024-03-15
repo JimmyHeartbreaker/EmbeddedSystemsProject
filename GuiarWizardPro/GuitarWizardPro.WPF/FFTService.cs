@@ -50,7 +50,7 @@ namespace GuitarWizardPro
                     
                 double[] freq = FftSharp.FFT.FrequencyScale(psd.Length, 32000);
 
-                TopFrequencies = psd.Zip(freq, (pow, freq) => (pow, freq)).OrderByDescending(x => x.pow).Where(x=>x.freq!=0).Select(x=>(int)Math.Round(x.freq)).Take(6).ToArray();
+                TopFrequencies = psd.Zip(freq, (pow, freq) => (pow, freq)).OrderByDescending(x => x.pow).Where(x=>x.freq!=0&& x.freq<1000).Select(x=>(int)Math.Round(x.freq)).Take(6).ToArray();
 
             });
         }

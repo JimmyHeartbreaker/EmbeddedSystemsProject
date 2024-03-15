@@ -2,27 +2,29 @@
 
 #include <driver/adc.h>
 #include "adc_audio.h"
-
+#include <math.h>
 
 namespace Audio::ADC
 {
 
   portMUX_TYPE DRAM_ATTR timerMux = portMUX_INITIALIZER_UNLOCKED;
   TaskHandle_t bufferFullTaskHandler;
+  
   hw_timer_t * adcTimer = NULL;
-  int16_t* SecondaryBuffer;
+  pbuf* SecondaryBuffer;
   int16_t writeBufPos = 0;
   void (*onBufferFullEvent)();
   SemaphoreHandle_t  semaOnBufferFull; 
  
   void swapBuffers()
   {
-    int16_t* temp = SecondaryBuffer;
-    SecondaryBuffer = PrimaryBuffer;
-    PrimaryBuffer = temp;
+      pbuf* temp = PrimaryBuffer;
+      PrimaryBuffer = SecondaryBuffer;
+      SecondaryBuffer = temp;     
   }
 
   void onBufferFull(void *params)
+
   {
     while(true)
     {
@@ -30,17 +32,18 @@ namespace Audio::ADC
       onBufferFullEvent();  
     }
   }
-
+  double i=0;
   void IRAM_ATTR onTimer() 
   {
-    portENTER_CRITICAL_ISR(&timerMux);       
-    SecondaryBuffer[writeBufPos++] = adc1_get_raw(ADC1_CHANNEL_0);
+    portENTER_CRITICAL_ISR(&timerMux);      
+   
+    ((uint16_t*)(SecondaryBuffer->payload))[writeBufPos++] = (sin(i+=0.05) + 1) * 2048;//adc1_get_raw(ADC1_CHANNEL_0);//  
   
     if (writeBufPos >= BUFFER_SIZE) 
     { 
-      writeBufPos = 0;
       swapBuffers();
-      xSemaphoreGiveFromISR(semaOnBufferFull, NULL);
+      writeBufPos = 0;
+      xSemaphoreGiveFromISR(semaOnBufferFull, NULL);        
     }
 
     portEXIT_CRITICAL_ISR(&timerMux);
@@ -54,8 +57,9 @@ namespace Audio::ADC
     setCpuFrequencyMhz(240);
     semaOnBufferFull = xSemaphoreCreateBinary();
     onBufferFullEvent = pOnBufferFullEvent;
-    PrimaryBuffer = (int16_t*)malloc(BUFFER_SIZE*2);
-    SecondaryBuffer =  (int16_t*)malloc(BUFFER_SIZE*2);
+    PrimaryBuffer = pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
+    SecondaryBuffer = pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
+   
     xTaskCreatePinnedToCore(onBufferFull, "Handler Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
     adcTimer = timerBegin(3, 20, true);
     timerAttachInterrupt(adcTimer, &onTimer, true);
