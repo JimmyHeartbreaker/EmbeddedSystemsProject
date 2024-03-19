@@ -1,3 +1,4 @@
+#if defined(ESP32) 
 #include "Arduino.h"
 #include "AsyncUDP_2.h"
 
@@ -305,3 +306,5 @@ bool AsyncUDP2::connected()
 esp_err_t AsyncUDP2::lastErr() {
 	return _lastErr;
 }
+
+#endif

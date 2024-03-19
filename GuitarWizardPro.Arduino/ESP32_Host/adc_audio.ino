@@ -37,7 +37,7 @@ namespace Audio::ADC
   {
     portENTER_CRITICAL_ISR(&timerMux);      
    
-    ((uint16_t*)(SecondaryBuffer->payload))[writeBufPos++] = (sin(i+=0.05) + 1) * 2048;//adc1_get_raw(ADC1_CHANNEL_0);//  
+    ((uint16_t*)(SecondaryBuffer->payload))[writeBufPos++] = adc1_get_raw(ADC1_CHANNEL_0);//  (sin(i+=0.05) + 1) * 2048;//
   
     if (writeBufPos >= BUFFER_SIZE) 
     { 
@@ -60,7 +60,7 @@ namespace Audio::ADC
     PrimaryBuffer = pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
     SecondaryBuffer = pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
    
-    xTaskCreatePinnedToCore(onBufferFull, "Handler Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
+    xTaskCreatePinnedToCore(onBufferFull, "Buffer Full Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
     adcTimer = timerBegin(3, 20, true);
     timerAttachInterrupt(adcTimer, &onTimer, true);
     timerAlarmWrite(adcTimer, 125, true); 

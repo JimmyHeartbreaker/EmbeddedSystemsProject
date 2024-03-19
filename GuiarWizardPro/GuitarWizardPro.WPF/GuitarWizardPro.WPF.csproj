@@ -35,6 +35,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="MathWorks.MATLAB.Engine">
+      <HintPath>..\..\..\..\..\_APPS\MATLAB\R2023b\extern\dotnet\netstandard2.0\MathWorks.MATLAB.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="MathWorks.MATLAB.Runtime">
+      <HintPath>..\..\..\..\..\_APPS\MATLAB\R2023b\extern\dotnet\netstandard2.0\MathWorks.MATLAB.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="MathWorks.MATLAB.Types">
+      <HintPath>..\..\..\..\..\_APPS\MATLAB\R2023b\extern\dotnet\netstandard2.0\MathWorks.MATLAB.Types.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="UdpAudioCaptureService.cs">
       <ExcludeFromCurrentConfiguration>false</ExcludeFromCurrentConfiguration>
     </Compile>

@@ -1,3 +1,5 @@
+#if defined(ESP32) 
+
 #ifndef ESPAsyncUDP2_H
 #define ESPAsyncUDP2_H
 
@@ -46,4 +48,5 @@ public:
 
 };
 
+#endif
 #endif
