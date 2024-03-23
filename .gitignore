@@ -22,3 +22,4 @@
 /libraries/ArduinoBLE/extras/test/src/Arduino.cpp
 /libraries/ArduinoBLE/*
 /libraries/Arduino_AdvancedAnalog/*
+/libraries/RF24/*

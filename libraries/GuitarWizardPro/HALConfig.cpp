@@ -33,8 +33,8 @@ static uint32_t hal_tim_freq(TIM_HandleTypeDef *tim) {
 int hal_tim_config(TIM_HandleTypeDef *tim) {
     
 
-    tim->Init.Period                = 125;
-    tim->Init.Prescaler             = 60;
+    tim->Init.Period                = 124;
+    tim->Init.Prescaler             = 59;
     tim->Init.CounterMode           = TIM_COUNTERMODE_UP;
     tim->Init.ClockDivision         = TIM_CLOCKDIVISION_DIV1;
     tim->Init.RepetitionCounter     = 0;

@@ -7,8 +7,8 @@
 
 namespace Audio::ADC
 {
-  const int BUFFER_SIZE = Shared::SAMPLES_PER_PACKET;
-  pbuf* PrimaryBuffer;
+  const int BUFFER_SIZE = 16;
+  uint16_t* PrimaryBuffer;
   void Setup(void (*onBufferFullEvent)());
   void Teardown();
 }

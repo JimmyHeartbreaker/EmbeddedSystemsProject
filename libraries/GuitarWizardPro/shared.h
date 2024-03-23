@@ -2,7 +2,7 @@
 
 namespace Shared
 {
-    const int SAMPLES_PER_PACKET = 500;
+    const int SAMPLES_PER_PACKET = 21;
     
 }
 
