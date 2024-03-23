@@ -101,7 +101,7 @@ void loop()
       Serial.println("AUDIO_SETUP::BEGIN");
     //  Audio::UDP::Setup();     
    
-      Audio::D2AC::Setup(PullDataFromUDPToDAC,Shared::SAMPLES_PER_PACKET);     
+      Audio::D2AC::Setup(PullDataFromUDPToDAC,Shared::PACKED_SAMPLES_PER_PACKET);     
       state = State::ACTIVE;      
       Serial.println("AUDIO_SETUP::END");
       break;

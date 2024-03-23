@@ -31,47 +31,27 @@ namespace Audio::ADC
   }
 int writeCount=0;
 long int mills;
-  void onBufferFull(void *params)
+  void IRAM_ATTR onBufferFull(void *params)
 
   {
     while(true)
     {
-      xSemaphoreTake( semaOnBufferFull,pdMS_TO_TICKS(100000) );  
-    
-      // writeCount++;
-      // long int t = millis();
-      // if(t-mills > 1000)
-      // {
-      //   Serial.println(writeCount);
-      //   writeCount = 0;
-      //   mills = t;
-      // }
-        radio.writeFast(PrimaryBuffer, 32);
-      
+      xSemaphoreTake( semaOnBufferFull,10000000 );  
+      radio.writeFast(PrimaryBuffer, 32);      
     }
   }
   int i=0;
   void IRAM_ATTR onTimer() 
   {
-    
-   // Serial.println("6");
-    portENTER_CRITICAL_ISR(&timerMux);      
+  //  portENTER_CRITICAL_ISR(&timerMux);      
    
-   // Serial.println("7");
-  //  if((i++%32000)==0)
-  //  {
-  //   Serial.println(millis());
-  //  }
-    uint16_t bufPos = (sampleCount * 3) / 2;
+   uint16_t bufPos =  (sampleCount * 3) / 2;
    if(sampleCount %2 == 0)
    {
-    //even    
-
     uint16_t value = ((uint16_t)adc1_get_raw(ADC1_CHANNEL_0));
-     //;
+   
     SecondaryBuffer[bufPos] = (uint8_t)value;//store the first byte    
     SecondaryBuffer[bufPos+1] =(uint8_t)((value & 0x0F00) >> 4);//store the remaining 4 bits in the upper 1/2 of the byte
-   // Serial.println(((uint16_t*)SecondaryBuffer)[bufPos]);
    }
    else
    {
@@ -79,15 +59,20 @@ long int mills;
     SecondaryBuffer[bufPos] |= (uint8_t)((value & 0x0F00 )>>8);//store the remaining 4 bits in the lower 1/2 of the byte
     SecondaryBuffer[bufPos+1] =(uint8_t)( value);//store the first byte    
    }
-    sampleCount++;
-   if (sampleCount >= 21) 
+   sampleCount++;
+   if (sampleCount >= Shared::PACKED_SAMPLES_PER_PACKET) 
    { 
-     swapBuffers();
+    
+      uint16_t* temp = PrimaryBuffer;
+      PrimaryBuffer = (uint16_t*)SecondaryBuffer;
+     
+     xSemaphoreGiveFromISR(semaOnBufferFull, NULL);  
+     
      sampleCount = 0;
-     xSemaphoreGiveFromISR(semaOnBufferFull, NULL);        
+      SecondaryBuffer = (uint8_t*)temp;           
    }
 
-    portEXIT_CRITICAL_ISR(&timerMux);
+    //portEXIT_CRITICAL_ISR(&timerMux);
   }
 
   void IRAM_ATTR Setup(void (*pOnBufferFullEvent)())
@@ -97,9 +82,9 @@ long int mills;
      analogRead(ADC1_CHANNEL_0);
      setCpuFrequencyMhz(240);
      semaOnBufferFull = xSemaphoreCreateBinary();
-    // onBufferFullEvent = pOnBufferFullEvent;
-    PrimaryBuffer =  (uint16_t*)malloc(32);//pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
-    SecondaryBuffer = (uint8_t*)malloc(32);//pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
+//     onBufferFullEvent = pOnBufferFullEvent;
+    PrimaryBuffer =  (uint16_t*)malloc(Shared::UNPACKED_PACKET_SIZE);//pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
+    SecondaryBuffer = (uint8_t*)malloc(Shared::UNPACKED_PACKET_SIZE);//pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
    
     xTaskCreatePinnedToCore(onBufferFull, "Buffer Full Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
     
@@ -128,10 +113,9 @@ long int mills;
         delay(100);
     }
 
-    //radio.stopListening();
-   adcTimer = timerBegin(3, 2, true);
+   adcTimer = timerBegin(3, 2499, true);
     timerAttachInterrupt(adcTimer, &onTimer, true);
-    timerAlarmWrite(adcTimer, 1247, true); 
+    timerAlarmWrite(adcTimer, 1, true); 
     timerAlarmEnable(adcTimer);
   }
 
