@@ -25,18 +25,8 @@ namespace Audio::D2AC
   uint8_t buffer2[42];
   void SendToOutput()
   {     
-   
-    
-        
-      writeCount++;
-      long int t = millis();
-      if(t-mills > 1000)
-      {
-        Serial.println(writeCount);
-        writeCount = 0;
-        mills = t;
-      }
         copyDataToBufferFPtr((uint16_t*)buffer);
+        
          while (!dac0.writeRequired())
     {
        // Serial.println("waiting");
