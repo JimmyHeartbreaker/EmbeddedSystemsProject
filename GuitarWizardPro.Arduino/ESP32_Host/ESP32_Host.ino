@@ -6,6 +6,7 @@
 #include "faults.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include "rf24_transeive.h"
 
 using namespace BT::LE::WifiInfo;
 using namespace Faults;
@@ -143,7 +144,8 @@ void loop()
       Serial.println("ADC_SETUP::BEGIN");
        
    //   Audio::UDP::Setup();
-      Audio::ADC::Setup(onBufferFull);   
+      RF24::Transceive::Setup();
+      Audio::ADC::Setup(RF24::Transceive::SendData);   
      
       state = State::ACTIVE;      
       Serial.println("ADC_SETUP::END");

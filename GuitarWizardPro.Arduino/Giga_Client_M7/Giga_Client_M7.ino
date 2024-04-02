@@ -41,14 +41,19 @@ void PullDataFromUDPToDAC(uint16_t* buffer)
  //  int i=0;
  //  while(i<Shared::SAMPLES_PER_PACKET)
   // {
-  //    if (radio.isChipConnected())
-    //  {
-     //   Serial.println("connected");
-      while(!radio.available()){}
+     if (!radio.isChipConnected())
+      {
+      }
+     //   
+      while(!radio.available()){
+
+      }
+      
        // if( radio.available()  ) 
         {
+
           radio.read(buffer, 32);
-          
+          Serial.println(buffer[0]);
         //      i+=16;
           //if(temp[0]==4096)
           //{
@@ -142,7 +147,7 @@ radio.openWritingPipe(0xF0F0F0F0F1);
 while(!radio.isChipConnected())
   {
 
-  //  Serial.println("chip is not connected");
+    Serial.println("chip is not connected");
     delay(100);
   }
    Serial.println("Started"); 
