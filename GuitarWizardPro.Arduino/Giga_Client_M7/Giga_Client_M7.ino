@@ -36,7 +36,7 @@ bool HandleFault(Fault* f)
 }
 bool high=true;
 
-void PullDataFromUDPToDAC(uint16_t* buffer)
+void PullDataFromUDPToDAC(uint8_t* buffer)
 {
  //  int i=0;
  //  while(i<Shared::SAMPLES_PER_PACKET)

@@ -133,16 +133,16 @@ void loop()
     case State::WIFI_HOST:
       Serial.println("WIFI_HOST::BEGIN");
       
- //     if(!HandleFault(Wifi::Host(AP_HOSTNAME,NULL)))
-  //    {
+      //if(!HandleFault(Wifi::Host(AP_HOSTNAME,NULL)))
+     // {
         state = State::ADC_SETUP;
-    //  }
+      //}
       Serial.println("WIFI_HOST::END");
       break;
     case State::ADC_SETUP:
       Serial.println("ADC_SETUP::BEGIN");
        
-   //   Audio::UDP::Setup();
+     // Audio::UDP::Setup();
       Audio::ADC::Setup(onBufferFull);   
      
       state = State::ACTIVE;      

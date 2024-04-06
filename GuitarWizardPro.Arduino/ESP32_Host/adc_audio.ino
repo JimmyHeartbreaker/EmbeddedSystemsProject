@@ -23,12 +23,6 @@ namespace Audio::ADC
   void (*onBufferFullEvent)();
   SemaphoreHandle_t  semaOnBufferFull; 
  
-  void swapBuffers()
-  {
-      uint16_t* temp = PrimaryBuffer;
-      PrimaryBuffer = (uint16_t*)SecondaryBuffer;
-      SecondaryBuffer = (uint8_t*)temp;     
-  }
 int writeCount=0;
 long int mills;
   void IRAM_ATTR onBufferFull(void *params)
@@ -37,42 +31,49 @@ long int mills;
     while(true)
     {
       xSemaphoreTake( semaOnBufferFull,10000000 );  
-      radio.writeFast(PrimaryBuffer, 32);      
+      radio.writeFast(PrimaryBuffer, 32); 
+      
     }
   }
-  int i=0;
+
   void IRAM_ATTR onTimer() 
   {
-  //  portENTER_CRITICAL_ISR(&timerMux);      
    
-   uint16_t bufPos =  (sampleCount * 3) / 2;
+   
+  static uint16_t xn1=0;
+  static uint16_t yn1=0;
+   uint16_t bufPos =  (sampleCount * 3) >> 1;
+
+   uint16_t xn = (adc1_get_raw(ADC1_CHANNEL_0));
+   
+   uint16_t yn = (yn1>>1) + (xn>>2) + (xn1>>2);
+   uint16_t value = yn;
+   
+   xn1 =xn;
+   yn1 = yn;
+   
    if(sampleCount %2 == 0)
    {
-    uint16_t value = ((uint16_t)adc1_get_raw(ADC1_CHANNEL_0));
-   
     SecondaryBuffer[bufPos] = (uint8_t)value;//store the first byte    
     SecondaryBuffer[bufPos+1] =(uint8_t)((value & 0x0F00) >> 4);//store the remaining 4 bits in the upper 1/2 of the byte
    }
    else
    {
-    uint16_t value = adc1_get_raw(ADC1_CHANNEL_0);
     SecondaryBuffer[bufPos] |= (uint8_t)((value & 0x0F00 )>>8);//store the remaining 4 bits in the lower 1/2 of the byte
     SecondaryBuffer[bufPos+1] =(uint8_t)( value);//store the first byte    
    }
    sampleCount++;
    if (sampleCount >= Shared::PACKED_SAMPLES_PER_PACKET) 
    { 
-    
-      uint16_t* temp = PrimaryBuffer;
-      PrimaryBuffer = (uint16_t*)SecondaryBuffer;
+      uint8_t* temp = PrimaryBuffer;
+      PrimaryBuffer = SecondaryBuffer;
      
      xSemaphoreGiveFromISR(semaOnBufferFull, NULL);  
      
      sampleCount = 0;
-      SecondaryBuffer = (uint8_t*)temp;           
+      SecondaryBuffer =temp;           
    }
 
-    //portEXIT_CRITICAL_ISR(&timerMux);
   }
 
   void IRAM_ATTR Setup(void (*pOnBufferFullEvent)())
@@ -82,9 +83,9 @@ long int mills;
      analogRead(ADC1_CHANNEL_0);
      setCpuFrequencyMhz(240);
      semaOnBufferFull = xSemaphoreCreateBinary();
-//     onBufferFullEvent = pOnBufferFullEvent;
-    PrimaryBuffer =  (uint16_t*)malloc(Shared::UNPACKED_PACKET_SIZE);//pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
-    SecondaryBuffer = (uint8_t*)malloc(Shared::UNPACKED_PACKET_SIZE);//pbuf_alloc(PBUF_TRANSPORT, BUFFER_SIZE*2, PBUF_RAM);
+     onBufferFullEvent = pOnBufferFullEvent;
+    PrimaryBuffer =  (uint8_t*)malloc(Shared::UNPACKED_PACKET_SIZE);
+    SecondaryBuffer = (uint8_t*)malloc(Shared::UNPACKED_PACKET_SIZE);
    
     xTaskCreatePinnedToCore(onBufferFull, "Buffer Full Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
     
