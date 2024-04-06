@@ -8,7 +8,7 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-namespace RF24::Transceive
+namespace Radio::Transceive
 {
 
   RF24 radio(9, 10,20000000); 
@@ -17,7 +17,7 @@ namespace RF24::Transceive
 
   void IRAM_ATTR SendData(void* data, int length)
   {
-      radio.writeFast(PrimaryBuffer, length);         
+      radio.writeFast(data, length);         
   }
   
   void Setup()

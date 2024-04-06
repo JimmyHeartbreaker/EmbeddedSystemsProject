@@ -4,35 +4,25 @@
 #include "adc_audio.h"
 #include <math.h>
 
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
 
 namespace Audio::ADC
 {
-
-  RF24 radio(9, 10,20000000); 
-
-
   portMUX_TYPE DRAM_ATTR timerMux = portMUX_INITIALIZER_UNLOCKED;
   TaskHandle_t bufferFullTaskHandler;
   
   hw_timer_t * adcTimer = NULL;
   uint8_t* SecondaryBuffer;
   int16_t sampleCount = 0;
-  void (*onBufferFullEvent)();
+  void (*onBufferFullEvent)(void* data, int length);
   SemaphoreHandle_t  semaOnBufferFull; 
  
-int writeCount=0;
-long int mills;
   void IRAM_ATTR onBufferFull(void *params)
 
   {
     while(true)
     {
       xSemaphoreTake( semaOnBufferFull,10000000 );  
-      radio.writeFast(PrimaryBuffer, 32); 
-      
+      onBufferFullEvent(PrimaryBuffer,32);      
     }
   }
 
@@ -76,7 +66,7 @@ long int mills;
 
   }
 
-  void IRAM_ATTR Setup(void (*pOnBufferFullEvent)())
+  void IRAM_ATTR Setup(void (*pOnBufferFullEvent)(void* data, int length))
   {  
      adc1_config_width(ADC_WIDTH_BIT_12);
      adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_2_5);    
@@ -89,31 +79,6 @@ long int mills;
    
     xTaskCreatePinnedToCore(onBufferFull, "Buffer Full Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
     
-    pinMode(D10,OUTPUT);
-    Serial.println("1");  
-    while(!radio.begin())
-    {
-        Serial.println("not successfull");
-        delay(1000);
-    }
-    
-    radio.setPALevel(RF24_PA_MIN);
-    radio.setRetries(0,0);
-    radio.setDataRate(RF24_2MBPS );
-    radio.setAutoAck(false);
-   radio.setChannel(124);
-   radio.openWritingPipe(0xF0F0F0F0F0);   
-  radio.openReadingPipe(1,0xF0F0F0F0F1);
-
-  radio.stopListening();
-  
-  radio.printPrettyDetails();
-    while(!radio.isChipConnected())
-    {
-        Serial.println("chip not connected1");
-        delay(100);
-    }
-
    adcTimer = timerBegin(3, 2499, true);
     timerAttachInterrupt(adcTimer, &onTimer, true);
     timerAlarmWrite(adcTimer, 1, true); 
