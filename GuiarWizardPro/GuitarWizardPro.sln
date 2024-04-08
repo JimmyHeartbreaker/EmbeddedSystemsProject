@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.ViewModel",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GuitarWizardPro.WPF", "GuitarWizardPro.WPF\GuitarWizardPro.WPF.csproj", "{5E25722D-BFEE-4EED-809A-63CE355013DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuitarWizardPro.Utility", "GuitarWizardPro.Utility\GuitarWizardPro.Utility.csproj", "{D4D69E49-90FB-40D9-946A-FC98FC93D43A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5E25722D-BFEE-4EED-809A-63CE355013DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E25722D-BFEE-4EED-809A-63CE355013DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E25722D-BFEE-4EED-809A-63CE355013DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4D69E49-90FB-40D9-946A-FC98FC93D43A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4D69E49-90FB-40D9-946A-FC98FC93D43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4D69E49-90FB-40D9-946A-FC98FC93D43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4D69E49-90FB-40D9-946A-FC98FC93D43A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,15 @@
+#include <dummy.h>
+#include "driver/adc.h"
+ #include "esp32-hal-adc.h"
+ #include <esp_adc_cal.h>
+
 
 #include "adc_audio.h"
 #include "faults.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include "rf24_transceive.h"
-
+#include "adc_audio_cont.h"
 using namespace Faults;
 
 
@@ -79,6 +84,7 @@ void loop()
       Serial.println("SETUP::BEGIN");
       Radio::Transceive::Setup();
       Audio::ADC::Setup(Radio::Transceive::SendData);   
+    //  Audio::ADC::DMA::Setup(Radio::Transceive::SendData);   
      
       state = State::ACTIVE;      
       Serial.println("SETUP::END");
@@ -92,6 +98,7 @@ void loop()
       Serial.println("RESET::END");
       break;
     case State::ACTIVE:
+      
       break;
   }
 }   

@@ -23,3 +23,5 @@
 /libraries/ArduinoBLE/*
 /libraries/Arduino_AdvancedAnalog/*
 /libraries/RF24/*
+/GuiarWizardPro/GuitarWizardPro.Utility/bin/*
+/GuiarWizardPro/GuitarWizardPro.Utility/obj/*

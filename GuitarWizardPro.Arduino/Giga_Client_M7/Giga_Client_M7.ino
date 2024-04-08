@@ -1,8 +1,6 @@
-#include "wifi_manage.h"
-#include "udp_audio_client.h"
 #include "dac_audio.h"
 #include "shared.h"
-
+#include "faults.h"
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -18,19 +16,6 @@ enum State {
 };
 
 enum State state = State::OFF;
-bool HandleFault(Fault* f)
-{
-  if(f)
-  {
-    if(f->ActionToTake == TERMINATE)
-    {
-      state = State::OFF;
-    }
-    return true;
-  }
-  return false;
-}
-bool high=true;
 
 void PullDataFromUDPToDAC(uint8_t* buffer)
 {
@@ -68,8 +53,7 @@ void loop()
 
 void setup() 
 { 
-  Serial.begin(115200);    
-  printf_begin();
+  Serial.begin(115200);   
   delay(5000);
   pinMode(D10,OUTPUT); 
   
