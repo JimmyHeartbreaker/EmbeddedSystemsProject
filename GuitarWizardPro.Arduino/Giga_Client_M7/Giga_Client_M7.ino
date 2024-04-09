@@ -33,7 +33,7 @@ void loop()
       Serial.println("AUDIO_SETUP::END");
       break;
     case State::ACTIVE:
-      Audio::D2AC::SendToOutput();
+      Audio::D2AC::WriteAudioToDMABuffer();
     break;
   }
 }

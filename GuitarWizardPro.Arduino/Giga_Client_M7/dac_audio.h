@@ -3,6 +3,8 @@
 
 namespace Audio::D2AC
 {
-  void Setup(void (*copyDataToBuffer)(void*, int), int samplesPerChannel);
-  void SendToOutput();
+  //setup the Circular dma buffer 
+  void Setup(void (*readAudio)(void*, int), int samplesPerChannel);
+  //must be called continuously
+  void WriteAudioToDMABuffer();
 }

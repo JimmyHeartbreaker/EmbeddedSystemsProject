@@ -10,6 +10,8 @@ namespace Audio::D2AC
   uint8_t buffer[Shared::PACKET_SIZE];
   const int ZEROLINE = 2048;
   const int MAXAUDIO = 4095;
+
+  //we must unpack out 2 samples in 3 byte structure
   void UnpackAudio() 
   {
     static bool hasAvg = false;
@@ -29,6 +31,7 @@ namespace Audio::D2AC
     static float w0=1;
     static float targetW0=1;
   
+    //gradually adjust filtering as a sudden change in filtering is noise in itself
     w0 += (targetW0 - w0)/64;
   
     float totalRawDx;
@@ -54,12 +57,15 @@ namespace Audio::D2AC
       uint16_t raw = *px;
       if (hasAvg) 
       {
+        //correct any issue with offset. the 12 bit dac goes from 0-4095
         *px *= (2048.0 / avg);
       }
+      //apply basic filtering
       float yn = (yn1  *w0) + ((*px)*(1-w0));
       *px = min(MAXAUDIO,(uint16_t)yn);
       yn1 = yn;
 
+      //monitor activity by taking the absolute difference of the last sample and this sample
       float rawDx = raw - prevRaw;
       totalRawDx += abs(rawDx);
       prevRaw = raw;
@@ -73,6 +79,7 @@ namespace Audio::D2AC
 
     float avgRawDx = totalRawDx / Shared::PACKED_SAMPLES_PER_PACKET;
     
+    //if nothing is happening work out an average
     if (avgRawDx < 8 && (total/Shared::PACKED_SAMPLES_PER_PACKET < 10  || !hasAvg ) )
     {
       avg = totalRawMidPt / Shared::PACKED_SAMPLES_PER_PACKET;
@@ -82,6 +89,7 @@ namespace Audio::D2AC
       }
     }     
     
+    //set the filtering to be more aggressive when we are not playing and less aggressive when we are playing
     targetW0 = max(0.6,min(1,5.0/ avgRawDx));    
   }
 
@@ -89,24 +97,30 @@ namespace Audio::D2AC
   {
     copyDataToBufferFPtr = copyDataToBuffer;
 
+    //init the DAC0 on the DMA controller
     if (!dac0.init(AN_RESOLUTION_12, samplesPerChannel)) 
     {
       Serial.println("Failed to start DAC0 !");   
     }
     
+    //get some data just before we kick it off
     copyDataToBufferFPtr(buffer,Shared::PACKET_SIZE);
+    //unpack it
     UnpackAudio();
+    //start
     dac0.start();
+    //we already know that the 2nd 1/2 of the circular buffer must be filled up before the 1st 1/2 has completed so lets get on with it
     copyDataToBufferFPtr(buffer,Shared::PACKET_SIZE);
     UnpackAudio();
   }
 
-  void SendToOutput() 
+  void WriteAudioToDMABuffer() 
   {
+    //wait for next buffer to come through
     copyDataToBufferFPtr(buffer,Shared::PACKET_SIZE);
 
-    while (!dac0.writeRequired()) {
-    }
+    //as soon as DMA interrupt for the next block of data occurs we can then copy that to the buffer with a bit of processing in the middle
+    while (!dac0.writeRequired()) {}
     UnpackAudio();
     dac0.writeCompleted();
   }

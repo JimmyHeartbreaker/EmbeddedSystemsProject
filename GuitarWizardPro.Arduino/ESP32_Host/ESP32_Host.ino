@@ -1,6 +1,7 @@
 #include "adc_audio.h"
 #include "rf24_transceive.h"
 
+
 enum State {
   OFF,
   SETUP,
@@ -8,6 +9,7 @@ enum State {
   RESET
 };
 
+//this is the initial state and the state to revert to incase of a crash
 enum State initialState = State::SETUP;
 enum State state = State::SETUP;
 bool waitingForResponse = false;
@@ -63,22 +65,22 @@ void loop()
       break;      
     case State::RESET:
       Serial.println("RESET::BEGIN");
- 
+      Radio::Transceive::Teardown();
       Audio::ADC::Teardown();
       state = initialState;
       
       Serial.println("RESET::END");
       break;
     case State::ACTIVE:
-      
+      //we dont need to do anything here because the actions are running in interrupts controlled by the adc logic
       break;
   }
 }   
 
 void setup() 
 {
-  Serial.begin(115200);
-  delay(5000);
-  Serial.println("started");
+  Serial.begin(115200);  
+  delay(1000);
+  Serial.println("Arduino Nano ESP32 has booted");
  
 }
