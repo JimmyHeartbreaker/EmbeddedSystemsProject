@@ -1,9 +1,5 @@
-#include <dummy.h>
-
 #include <driver/adc.h>
 #include "adc_audio.h"
-#include <math.h>
-
 
 namespace Audio::ADC
 {
@@ -12,6 +8,8 @@ namespace Audio::ADC
   
   hw_timer_t * adcTimer = NULL;
   uint8_t* SecondaryBuffer;
+  uint8_t* PrimaryBuffer;
+ 
   int16_t sampleCount = 0;
   void (*onBufferFullEvent)(void* data, int length);
   SemaphoreHandle_t  semaOnBufferFull; 
@@ -27,15 +25,13 @@ namespace Audio::ADC
   void IRAM_ATTR onTimer() 
   {
     static uint16_t xn1=0;
-    static uint16_t yn1=0;
     uint16_t bufPos =  (sampleCount * 3) >> 1;
 
-    uint16_t xn = (adc1_get_raw(ADC1_CHANNEL_0));
+    uint16_t xn = adc1_get_raw(ADC1_CHANNEL_0);
    
-    uint16_t yn = (yn1>>1) + (xn>>1);
-    uint16_t value = yn;
+    uint16_t value = (xn1>>1) + (xn>>1);
+    
     xn1 =xn;
-    yn1 = yn;
     if(sampleCount %2 == 0)
     {
       SecondaryBuffer[bufPos] = (uint8_t)value;//store the first byte    
@@ -46,6 +42,7 @@ namespace Audio::ADC
       SecondaryBuffer[bufPos] |= (uint8_t)((value & 0x0F00 )>>8);//store the remaining 4 bits in the lower 1/2 of the byte
       SecondaryBuffer[bufPos+1] =(uint8_t)( value);//store the first byte    
     }
+    
     sampleCount++;
     if (sampleCount >= Shared::PACKED_SAMPLES_PER_PACKET) 
     { 
@@ -59,7 +56,7 @@ namespace Audio::ADC
     }
   }
 
-  void IRAM_ATTR Setup(void (*pOnBufferFullEvent)(void* data, int length))
+  void Setup(void (*pOnBufferFullEvent)(void* data, int length))
   {  
     adc1_config_width(ADC_WIDTH_BIT_12);
     adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_2_5);    
@@ -67,8 +64,8 @@ namespace Audio::ADC
     setCpuFrequencyMhz(240);
     semaOnBufferFull = xSemaphoreCreateBinary();
     onBufferFullEvent = pOnBufferFullEvent;
-    PrimaryBuffer =  (uint8_t*)malloc(Shared::UNPACKED_PACKET_SIZE);
-    SecondaryBuffer = (uint8_t*)malloc(Shared::UNPACKED_PACKET_SIZE);
+    PrimaryBuffer =  (uint8_t*)malloc(Shared::PACKET_SIZE);
+    SecondaryBuffer = (uint8_t*)malloc(Shared::PACKET_SIZE);
    
     xTaskCreatePinnedToCore(onBufferFull, "Buffer Full Task", 8192, NULL, 1, &bufferFullTaskHandler,0);
     

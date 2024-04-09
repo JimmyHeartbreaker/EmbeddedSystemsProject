@@ -3,6 +3,6 @@
 
 namespace Audio::D2AC
 {
-  void Setup(void (*copyDataToBuffer)(uint8_t*), int samplesPerChannel);
+  void Setup(void (*copyDataToBuffer)(void*, int), int samplesPerChannel);
   void SendToOutput();
 }

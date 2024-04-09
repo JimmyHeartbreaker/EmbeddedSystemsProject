@@ -25,3 +25,5 @@
 /libraries/RF24/*
 /GuiarWizardPro/GuitarWizardPro.Utility/bin/*
 /GuiarWizardPro/GuitarWizardPro.Utility/obj/*
+/libraries/WiFi101/examples/*
+/libraries/WiFi101/*

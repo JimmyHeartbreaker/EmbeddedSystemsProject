@@ -1,8 +1,27 @@
 #if defined(CORE_CM7) || defined(CORE_CM4) 
-#include "AdvancedAnalog.h"
+#pragma once
+
+#include "pinDefinitions.h"
+
+
 
 #ifndef ARDUINO_AUDIO_DAC_H_
 #define ARDUINO_AUDIO_DAC_H_
+
+
+enum  {
+    AN_RESOLUTION_8  = 0U,
+    AN_RESOLUTION_10 = 1U,
+    AN_RESOLUTION_12 = 2U,
+    AN_RESOLUTION_14 = 3U,
+    AN_RESOLUTION_16 = 4U,
+};
+
+
+
+#define AN_MAX_ADC_CHANNELS     (5)
+#define AN_MAX_DAC_CHANNELS     (1)
+#define AN_ARRAY_SIZE(a)        (sizeof(a) / sizeof(a[0]))
 
 struct dac_descr_t;
 

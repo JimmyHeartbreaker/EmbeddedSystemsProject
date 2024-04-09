@@ -1,13 +1,7 @@
 #include "dac_audio.h"
 #include "shared.h"
-#include "faults.h"
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
-#include <printf.h>
+#include "rf24_transceive.h"
 
-RF24 radio(9, 10,20000000); // CE, CSN
-  const uint64_t pipes[2] = {   0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
 
 enum State {
   OFF,
@@ -16,13 +10,6 @@ enum State {
 };
 
 enum State state = State::OFF;
-
-void PullDataFromUDPToDAC(uint8_t* buffer)
-{
-  while(!radio.isChipConnected()){}
-  while(!radio.available()){}
-  radio.read(buffer, 32);      
-}
 
 void loop() 
 { 
@@ -40,8 +27,8 @@ void loop()
       }
     case State::SETUP:
       Serial.println("AUDIO_SETUP::BEGIN");
-   
-      Audio::D2AC::Setup(PullDataFromUDPToDAC,Shared::PACKED_SAMPLES_PER_PACKET);     
+      Radio::Transceive::SetupForReceive(&SPI1);
+      Audio::D2AC::Setup(Radio::Transceive::ReceiveData,Shared::PACKED_SAMPLES_PER_PACKET);     
       state = State::ACTIVE;      
       Serial.println("AUDIO_SETUP::END");
       break;
@@ -55,31 +42,6 @@ void setup()
 { 
   Serial.begin(115200);   
   delay(5000);
-  pinMode(D10,OUTPUT); 
-  
-  SPI1.begin();
-  while(!radio.begin(&SPI1))
-  {
-    Serial.println("failed to init radio");
-    delay(100);
-  } 
-  
-  radio.setChannel(124);
-  radio.setAutoAck(false);
-  radio.setDataRate(RF24_2MBPS );
     
-  radio.openWritingPipe(0xF0F0F0F0F1);
-  radio.openReadingPipe(1,0xF0F0F0F0F0);
-  radio.setPALevel(RF24_PA_MIN);
-  radio.startListening();
-  
-  radio.printPrettyDetails();
-  
-  while(!radio.isChipConnected())
-  {
-    Serial.println("chip is not connected");
-    delay(100);
-  }
-  
   Serial.println("Started"); 
 }

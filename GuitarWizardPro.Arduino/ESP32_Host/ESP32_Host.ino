@@ -1,43 +1,16 @@
-#include <dummy.h>
-#include "driver/adc.h"
- #include "esp32-hal-adc.h"
- #include <esp_adc_cal.h>
-
-
 #include "adc_audio.h"
-#include "faults.h"
-#include <stdarg.h>
-#include <stdio.h>
 #include "rf24_transceive.h"
-#include "adc_audio_cont.h"
-using namespace Faults;
-
 
 enum State {
   OFF,
   SETUP,
   ACTIVE,
   RESET
-} ;
-
+};
 
 enum State initialState = State::SETUP;
 enum State state = State::SETUP;
 bool waitingForResponse = false;
-
-
-bool HandleFault(Fault* f)
-{
-  if(f)
-  {
-    if(f->ActionToTake == TERMINATE)
-    {
-      state = State::OFF;
-    }
-    return true;
-  }
-  return false;
-}
 
 void loop() 
 { 
@@ -82,9 +55,8 @@ void loop()
   {
     case State::SETUP:
       Serial.println("SETUP::BEGIN");
-      Radio::Transceive::Setup();
+      Radio::Transceive::SetupForTransmit(&SPI);
       Audio::ADC::Setup(Radio::Transceive::SendData);   
-    //  Audio::ADC::DMA::Setup(Radio::Transceive::SendData);   
      
       state = State::ACTIVE;      
       Serial.println("SETUP::END");
