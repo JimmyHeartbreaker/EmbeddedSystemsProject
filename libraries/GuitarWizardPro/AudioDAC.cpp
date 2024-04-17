@@ -100,7 +100,7 @@ int AudioDAC::init(uint32_t resolution, size_t n_samples)
         return 0;
     }
 
-    SCB_DisableDCache();
+ //   SCB_DisableDCache();
     // Configure DAC GPIO pins.
     for (size_t i=0; i<n_channels; i++) 
     {

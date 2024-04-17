@@ -39,9 +39,9 @@ namespace Audio::ADC
     // EE
     uint16_t bufPos =  (sampleCount * 3) >> 1;
 
-    uint16_t xn = adc1_get_raw(ADC1_CHANNEL_0);
+    uint16_t xn = adc1_get_raw(ADC1_CHANNEL_1);
    
-    uint16_t value = (xn1>>1) + (xn>>1);
+    uint16_t value =xn;// (xn1>>1) + (xn>>1);
     
     xn1 =xn;
     if(sampleCount %2 == 0)
@@ -71,8 +71,8 @@ namespace Audio::ADC
   void Setup(void (*pOnBufferFullEvent)(void* data, int length))
   {  
     adc1_config_width(ADC_WIDTH_BIT_12); //12 bits
-    adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_2_5);    //0-1.25V
-    analogRead(ADC1_CHANNEL_0);//must be called once at the start to initialize some driver stuff
+    adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_2_5);    //0-1.25V
+    analogRead(ADC1_CHANNEL_1);//must be called once at the start to initialize some driver stuff
     setCpuFrequencyMhz(240); //set cpu to 240mhz incase it isnt already set
     semaOnBufferFull = xSemaphoreCreateBinary();
     onBufferFullEvent = pOnBufferFullEvent;

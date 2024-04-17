@@ -19,8 +19,13 @@ namespace Radio::Transceive
   
   void ReceiveData(void* buffer, int length)
   {
-    while(!radio.isChipConnected()){}
-    while(!radio.available()){}
+    while(!radio.isChipConnected()){
+    //  Serial.println("chip not connected");
+    }
+    while(!radio.available()){
+      
+     // Serial.println("radio unavailable");
+    }
     radio.read(buffer, length);      
   }
 

@@ -12,76 +12,50 @@ enum State {
 
 enum State state = State::OFF;
 Shared::AppData sharedAppData;
-int16_t* prevBuf;
-bool primary=true;
-bool started=false;
+
 void loop() 
 { 
- if(primary)
-  {
-    if(sharedAppData.primaryLength<=0)
-    {
-      return;
-    }
-    Audio::D2AC::Write(sharedAppData.PrimaryAudioBuffer);
-
-    primary = false;
-  }
-  else
-  {
-    if(sharedAppData.secondaryLength<=0)
-    {
-      return;
-    }
-    Audio::D2AC::Write(sharedAppData.SecondaryAudioBuffer);
   
-    primary=true;
-  } // while(HAL_HSEM_FastTake(HSEM_ID_0) != HAL_OK)
-      // { 
-      // }
-      // bool shouldWrite = prevBuf!=sharedAppData.PrimaryAudioBuffer;
+    //   
+  
+      if(sharedAppData.dataAvailable){
       
-      // prevBuf = sharedAppData.PrimaryAudioBuffer;
+        if(HAL_HSEM_FastTake(HSEM_ID_0) == HAL_OK)
+        { 
       
-      // HAL_HSEM_Release(HSEM_ID_0,0);  
-      // if(shouldWrite)
-      // { 
-      //   
-      // }
+    //   RPC_MPI::Print("data available");  
+        //delay(10000);
+            Audio::D2AC::UnpackAndStream(sharedAppData.AudioBuffer);
+            sharedAppData.dataAvailable = false;
           
-      
-      // delay(1);
-     // if(sharedAppData.dataAvailable)
-     // {
-      //  sharedAppData.dataAvailable = false;
-      //}
-     // sharedAppData.dataAvailable=false;
-            
-   //   delay(5);
-    
+            HAL_HSEM_Release(HSEM_ID_0,0);
+        
+      //  RPC_MPI::Print("released");  
+        } 
+      }
   
 }
 
-const int PacketSize=480;
 void setup() 
-{
-
-  sharedAppData.PrimaryAudioBuffer = (int16_t*)malloc(1440);
-  
-  sharedAppData.SecondaryAudioBuffer = (int16_t*)malloc(1440);
-  
+{  
   if(RPC.begin())
   {
     delay(2000);
     __HAL_RCC_HSEM_CLK_ENABLE();
     HAL_NVIC_SetPriority(HSEM1_IRQn, 0, 1);
     HAL_NVIC_EnableIRQ(HSEM1_IRQn);
-
-    int ptr = (int)&sharedAppData;
+    sharedAppData.x = 12345;
     
+    sharedAppData.AudioBuffer = (uint8_t*)malloc(32);
+    
+    uint ptr = (uint)&sharedAppData;
+    
+    RPC_MPI::Print(sizeof(char*));
+    RPC_MPI::Print(ptr);
     RPC_MPI::Send(Shared::APPDATA_RECIEVE, (char*)&ptr,sizeof(char*));
     RPC_MPI::Print("RPC started");
-    Audio::D2AC::Setup();
+    
+    Audio::D2AC::Setup(Shared::PACKED_SAMPLES_PER_PACKET);
     state = State::ACTIVE;
   }
   else

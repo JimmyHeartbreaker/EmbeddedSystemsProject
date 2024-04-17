@@ -57,6 +57,7 @@ void loop()
   {
     case State::SETUP:
       Serial.println("SETUP::BEGIN");
+      
       Radio::Transceive::SetupForTransmit(&SPI);
       Audio::ADC::Setup(Radio::Transceive::SendData);   
      
@@ -65,7 +66,7 @@ void loop()
       break;      
     case State::RESET:
       Serial.println("RESET::BEGIN");
-      Radio::Transceive::Teardown();
+     // Radio::Transceive::Teardown();
       Audio::ADC::Teardown();
       state = initialState;
       
@@ -80,7 +81,7 @@ void loop()
 void setup() 
 {
   Serial.begin(115200);  
-  delay(1000);
+  delay(5000);
   Serial.println("Arduino Nano ESP32 has booted");
  
 }
