@@ -193,7 +193,7 @@ extern "C"
         DAC_DMAConvCplt(&dac_descr_all[0]);
     }
 
-    void HAL_DACEx_ConvCpltCallbackCh2(DAC_HandleTypeDef *dac) 
+    void HAL_DAC_ConvCpltCallbackCh2(DAC_HandleTypeDef *dac) 
     {
         DAC_DMAConvCplt(&dac_descr_all[1]);
     }

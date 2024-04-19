@@ -13,7 +13,7 @@ namespace GuitarWizardPro.WPF
         private readonly int byteLength;
         private readonly double scaler;
         private readonly double sqrt2Inv;
-        private int width = 1000;
+        private int width = 50*21;
         private int height = 500;
         private readonly AudioBufferService audioBufferService;
         private Dispatcher dispatcher;

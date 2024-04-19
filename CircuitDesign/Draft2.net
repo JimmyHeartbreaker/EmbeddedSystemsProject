@@ -1,0 +1,12 @@
+* D:\_DOCUMENTS\Embedded Systems\EmbeddedSystemsProject\CircuitDesign\Draft2.asc
+V1 N001 0 SINE(0 1.6 2000)
+C1 N002 0 1µ
+C2 0 N003 1µ
+R2 N003 N002 10
+C3 N004 0 1µ
+R4 0 N004 80
+R1 N004 N003 10
+R3 N002 N001 10
+.tran 0.1
+.backanno
+.end

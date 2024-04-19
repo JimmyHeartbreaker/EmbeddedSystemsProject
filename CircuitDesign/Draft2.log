@@ -2,21 +2,21 @@ Circuit: * D:\_DOCUMENTS\Embedded Systems\EmbeddedSystemsProject\CircuitDesign\D
 
 .OP point found by inspection.
 
-Date: Wed Apr 10 10:25:06 2024
-Total elapsed time: 0.393 seconds.
+Date: Wed Apr 17 16:17:20 2024
+Total elapsed time: 0.115 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 64084
-traniter = 64084
-tranpoints = 32043
-accept = 20525
-rejected = 11518
+totiter = 14896
+traniter = 14896
+tranpoints = 7449
+accept = 5247
+rejected = 2202
 matrix size = 5
 fillins = 0
 solver = Normal
-Avg thread counts: 1.1/1.2/1.2/1.1
-Matrix Compiler1:       9 opcodes  0.2/[0.1]/0.2
-Matrix Compiler2: 321 bytes object code size  0.2/0.2/[0.1]
+Avg thread counts: 1.4/1.8/1.8/1.4
+Matrix Compiler1:       9 opcodes  0.1/[0.1]/0.1
+Matrix Compiler2: 321 bytes object code size  0.1/0.1/[0.1]
 

@@ -6,7 +6,7 @@
 
 namespace Audio::D2AC 
 {
-  AudioDAC dac0(A12);
+  AudioDAC dac1(A12);
   void (*copyDataToBufferFPtr)(void*, int);
 
   const float ZEROLINE = 2048;
@@ -18,7 +18,7 @@ namespace Audio::D2AC
     static bool hasAvg = false;
     static uint32_t avg;
     
-    uint16_t* outBuf = dac0.getWriteBuffer();
+    uint16_t* outBuf = dac1.getWriteBuffer();
     uint8_t* outBufPos = (uint8_t*)outBuf;
 
     uint8_t* endBuf = outBufPos + Shared::PACKED_SAMPLES_PER_PACKET*2;
@@ -33,8 +33,14 @@ namespace Audio::D2AC
     static float targetW0=0.5;
   
     //gradually adjust filtering as a sudden change in filtering is noise in itself
-    w0 += (targetW0 - w0)/64;
-  
+    if(targetW0 < w0)
+    {
+      w0 += (targetW0 - w0)/64;    
+    }
+    else
+    {
+      w0 += (targetW0 - w0)/16;
+    }
     float totalRawDx;
     uint32_t total = 0;
     uint32_t totalRawMidPt = 0;
@@ -56,14 +62,14 @@ namespace Audio::D2AC
 
       uint16_t* px = (uint16_t*)(outBufPos);
       uint16_t raw = *px;
-      if (hasAvg) 
-      {
-        //correct any issue with offset. the 12 bit dac goes from 0-4095
-        *px *= (ZEROLINE / avg);
-      }
+      // if (hasAvg) 
+      // {
+      //   //correct any issue with offset. the 12 bit dac goes from 0-4095
+      //   *px *= (ZEROLINE / avg);
+      // }
       //apply basic filtering
-      float yn = (yn1  *w0) + ((*px)*(1-w0));
-      *px = min(MAXAUDIO,yn);
+      float yn =min(MAXAUDIO, (yn1*w0) + ((*px)*(1-w0)));
+      *px = yn;
       yn1 = yn;
 
       //monitor activity by taking the absolute difference of the last sample and this sample
@@ -78,17 +84,17 @@ namespace Audio::D2AC
       outBufPos += 2;
     }
 
-    float avgRawDx = totalRawDx / Shared::PACKED_SAMPLES_PER_PACKET;
+     float avgRawDx = totalRawDx / Shared::PACKED_SAMPLES_PER_PACKET;
     
-    //if nothing is happening work out an average
-    if (avgRawDx < 8 && (total/Shared::PACKED_SAMPLES_PER_PACKET < 10  || !hasAvg ) )
-    {
-      avg = totalRawMidPt / Shared::PACKED_SAMPLES_PER_PACKET;
-      if(avg>1500 && avg < 2500)
-      {
-      hasAvg = true;
-      }
-    }
+    // //if nothing is happening work out an average
+    // if (avgRawDx < 8 && (total/Shared::PACKED_SAMPLES_PER_PACKET < 10  || !hasAvg ) )
+    // {
+    //   avg = totalRawMidPt / Shared::PACKED_SAMPLES_PER_PACKET;
+    //   if(avg>1500 && avg < 2500)
+    //   {
+    //   hasAvg = true;
+    //   }
+    // }
     
   //  RPC_MPI::Print((int)avgRawDx);
     //set the filtering to be more aggressive when we are not playing and less aggressive when we are playing
@@ -100,7 +106,7 @@ namespace Audio::D2AC
   {
 
     //init the DAC0 on the DMA controller
-    if (!dac0.init(AN_RESOLUTION_12, samplesPerChannel)) 
+    if (!dac1.init(AN_RESOLUTION_12, samplesPerChannel)) 
     {
     }
     else
@@ -114,7 +120,7 @@ namespace Audio::D2AC
     //unpack it
    // UnpackAudio();
     //start
-    dac0.start();
+    dac1.start();
    
     //we already know that the 2nd 1/2 of the circular buffer must be filled up before the 1st 1/2 has completed so lets get on with it
     //copyDataToBufferFPtr(buffer,Shared::PACKET_SIZE);
@@ -127,12 +133,12 @@ namespace Audio::D2AC
     //as soon as DMA interrupt for the next block of data occurs we can then copy that to the buffer with a bit of processing in the middle
     
  //       RPC_MPI::Print("waiting...");   
-    while (!dac0.writeRequired()) {}
+    while (!dac1.writeRequired()) {}
     
    //     RPC_MPI::Print("done waiting");
     UnpackAudio(buffer);
     
      //   RPC_MPI::Print("unpacked");
-    dac0.writeCompleted();
+    dac1.writeCompleted();
   }
 }
