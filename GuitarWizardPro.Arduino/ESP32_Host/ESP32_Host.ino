@@ -1,4 +1,5 @@
 #include "adc_audio.h"
+#include "adc_dma_audio.h"
 #include "rf24_transceive.h"
 
 
@@ -80,7 +81,7 @@ void loop()
 void setup() 
 {
   Serial.begin(115200);  
-  delay(1000);
+  delay(5000);
   Serial.println("Arduino Nano ESP32 has booted");
  
 }

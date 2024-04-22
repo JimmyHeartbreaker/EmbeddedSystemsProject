@@ -8,6 +8,6 @@ namespace  Radio::Transceive
   void SetupForReceive(SPIClass* spi);
  void SendData(void* data, int length);  
  void ReceiveData(void* buffer, int length);
-
+ void Teardown();
 }
 

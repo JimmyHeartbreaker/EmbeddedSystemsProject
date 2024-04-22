@@ -27,3 +27,7 @@
 /GuiarWizardPro/GuitarWizardPro.Utility/obj/*
 /libraries/WiFi101/examples/*
 /libraries/WiFi101/*
+/Arduino_CMSIS-DSP/*
+/Arduino_CMSIS-DSP/*
+/cmsis_dsp/*
+/libraries/cmsis_dsp/*
