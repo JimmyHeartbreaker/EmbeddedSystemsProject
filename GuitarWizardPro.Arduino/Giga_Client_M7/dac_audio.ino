@@ -78,8 +78,6 @@ namespace Audio::D2AC
     while (!dac0.writeRequired()) {}
     UnpackAudio(buffer);
     dac0.writeCompleted();
-    
-    even = !even;
    
   }
 }
