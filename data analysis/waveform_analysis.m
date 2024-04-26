@@ -3,7 +3,7 @@
 fc = 1000;
 fs = 32000;
 
-[b,a] = butter(13,fc/(fs/2.0));
+[b,a] = butter(4,fc/(fs/2.0));
 fprintf('%s\n',sprintf(' %.15f,',b))
  % 
   fprintf('%s\n',sprintf(' %.15f,',a))
