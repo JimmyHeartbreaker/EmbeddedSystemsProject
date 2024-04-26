@@ -1,21 +1,27 @@
 % 
 % % 
-fc = 700;
+fc = 1000;
 fs = 32000;
 
-[b,a] = butter(13,fc/(fs/2))
+[b,a] = butter(13,fc/(fs/2.0));
+fprintf('%s\n',sprintf(' %.15f,',b))
+ % 
+  fprintf('%s\n',sprintf(' %.15f,',a))
 
 freqz(b,a,[],fs);
 %subplot(3,1,1);
 ylim([-100 20]);
+title('filter');
 figure
 x = readtable("waveform_no_filter.csv");
-%plot(x.Var1(1:1000));
+plot(x.Var1(1:1000)/4);
+title('waveform unfiltered');
 figure;
-dataIn = x.Var1;%randn(1000,1);
+dataIn = x.Var1/4;%randn(1000,1);
 dataOut = filter(b,a,dataIn);
 
 plot(dataOut);
+title('filtered');
 figure
 
 y = fft(dataOut);
@@ -26,6 +32,7 @@ f = (10:n/2);% frequency range
 power = abs(y(10:end/2));
 
 plot(f,power)
+title('fft filtered');
 xlabel('Frequency')
 ylabel('Power')
 figure
@@ -45,6 +52,7 @@ f = (10:n/2);% frequency range
 power = abs(y(10:end/2));
 
 plot(f,power)
+title('fft unfiltered');
 xlabel('Frequency')
 ylabel('Power')
 

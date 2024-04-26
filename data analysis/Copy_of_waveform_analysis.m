@@ -14,3 +14,9 @@ power = abs(y(10:end/2));
 plot(f,power)
 xlabel('Frequency')
 ylabel('Power')
+
+
+Fs = 32000;
+n = 3;
+Wn = [0.0625];
+b = fir1(n,Wn)
