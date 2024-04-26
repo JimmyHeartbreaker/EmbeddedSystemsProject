@@ -3,21 +3,21 @@
 fc = 1000;
 fs = 32000;
 
-[b,a] = butter(13,fc/(fs/2.0));
-fprintf('%s\n',sprintf(' %.15f,',b))
+[b,a] = butter(4,0.0625);
+fprintf('%s\n',sprintf(' %.20f,',b))
  % 
-  fprintf('%s\n',sprintf(' %.15f,',a))
+  fprintf('%s\n',sprintf(' %.20f,',a))
 
 freqz(b,a,[],fs);
 %subplot(3,1,1);
 ylim([-100 20]);
-title('bode')
+title('filter');
 figure
 x = readtable("waveform_no_filter.csv");
-plot(x.Var1(1:1000));
+plot(x.Var1(1:1000)/4);
 title('waveform unfiltered');
 figure;
-dataIn = x.Var1;%randn(1000,1);
+dataIn = x.Var1/4;%randn(1000,1);
 dataOut = filter(b,a,dataIn);
 
 plot(dataOut);
