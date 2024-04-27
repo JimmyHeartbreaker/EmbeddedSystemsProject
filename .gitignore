@@ -31,3 +31,4 @@
 /Arduino_CMSIS-DSP/*
 /cmsis_dsp/*
 /libraries/cmsis_dsp/*
+/libraries/Arduino_USBHostMbed5/*
