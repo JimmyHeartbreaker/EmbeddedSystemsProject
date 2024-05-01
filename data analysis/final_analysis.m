@@ -25,3 +25,12 @@ title("FIR filtered")
 % title("IIR filtered")
 % hold off
 
+sys = tf(1,[1,1.41422,1]);
+bode(sys);
+grid;
+
+Hd=c2d(sys,0.5,'tustin')
+
+
+sys = tf(6283/3.948e7,[1 12566 3.948e7]);
+bode(sys)
