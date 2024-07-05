@@ -23,18 +23,18 @@ namespace Audio::D2AC
   static float32_t iirState[NUM_ORDER_IIR];
   static float32_t iirCoeffs[NUM_STAGE_IIR * (NUM_STD_COEFFS*2+1)] = 
   {
-      1*scaler[0], 2*scaler[0], 1*scaler[0],  1.903478583146325231467699268250726163387, -0.940769933214890552442000171140534803271,
-      1*scaler[1], 2*scaler[1], 1*scaler[1],  1.801971474008201790084626736643258482218, -0.837274182242373044005034898873418569565,
-      1*scaler[2], 2*scaler[2], 1*scaler[2],  1.723776172762509384384088662045542150736,  -0.757546944478828976343720569275319576263,
-      1*scaler[3], 2*scaler[3], 1*scaler[3],  1.671090355770465496476617772714234888554,  -0.703828951310759620696444471832364797592,
-      1*scaler[4], 2*scaler[4], 1*scaler[4],  1.644663015847778408939916516828816384077,  -0.676883869190622045053373767586890608072
+      scaler[0], 2*scaler[0], scaler[0],  1.903478583146325231467699268250726163387, -0.940769933214890552442000171140534803271,
+      scaler[1], 2*scaler[1], scaler[1],  1.801971474008201790084626736643258482218, -0.837274182242373044005034898873418569565,
+      scaler[2], 2*scaler[2], scaler[2],  1.723776172762509384384088662045542150736,  -0.757546944478828976343720569275319576263,
+      scaler[3], 2*scaler[3], scaler[3],  1.671090355770465496476617772714234888554,  -0.703828951310759620696444471832364797592,
+      scaler[4], 2*scaler[4], scaler[4],  1.644663015847778408939916516828816384077,  -0.676883869190622045053373767586890608072
   };
 
   AudioDAC dac0(A12);
   void (*copyDataToBufferFPtr)(void*, int);
-
   static arm_biquad_cascade_df2T_instance_f32 S1k;
   volatile bool applyFilter = true;
+
   void FilterAudio( int16_t* inbuf) 
   { 
     float32_t signal[BLOCK_SIZE];
@@ -58,7 +58,7 @@ namespace Audio::D2AC
   }
 
   int16_t buffer[Shared::PACKET_SIZE];
-  int lastReadingMillis=0;
+  volatile int lastReadingMillis=0;
   void flipFilter()
   {
     int newReadingMillis= millis();
@@ -85,18 +85,15 @@ namespace Audio::D2AC
     
     //get some data just before we kick it off
     copyDataToBufferFPtr(buffer,Shared::PACKET_SIZE);
-    //unpack it
     FilterAudio(buffer);
-    uint16_t* outBuf = dac0.getWriteBuffer();
-    memcpy(outBuf,buffer,Shared::PACKET_SIZE);
+    memcpy(dac0.getWriteBuffer(),buffer,Shared::PACKET_SIZE);
 
     //start
     dac0.start();
     //we already know that the 2nd 1/2 of the circular buffer must be filled up before the 1st 1/2 has completed so lets get on with it
     copyDataToBufferFPtr(buffer,Shared::PACKET_SIZE);
     FilterAudio(buffer);
-    outBuf = dac0.getWriteBuffer();
-    memcpy(outBuf,buffer,Shared::PACKET_SIZE);   
+    memcpy(dac0.getWriteBuffer(),buffer,Shared::PACKET_SIZE);   
   }
 
   void WriteAudioToDMABuffer() 
@@ -108,9 +105,7 @@ namespace Audio::D2AC
     //as soon as DMA interrupt for the next block of data occurs we can then copy that to the buffer with a bit of processing in the middle
     while (!dac0.writeRequired()) {}
     
-    uint16_t* outBuf = dac0.getWriteBuffer();
-    memcpy(outBuf,buffer,32);
-    dac0.writeCompleted();
-   
+    memcpy(dac0.getWriteBuffer(),buffer,32);
+    dac0.writeCompleted();   
   }
 }

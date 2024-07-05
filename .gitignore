@@ -32,3 +32,24 @@
 /cmsis_dsp/*
 /libraries/cmsis_dsp/*
 /libraries/Arduino_USBHostMbed5/*
+/EEE416 Project/EEE416_Project_B00896175.zip
+/EEE416 Project/EEE416_prensentation_slides.pptx
+/EEE416 Project/EEE416_Report.pdf
+/EEE416 Project/data analysis/data_analysis.m
+/EEE416 Project/data analysis/getFilter2.m
+/EEE416 Project/data analysis/waveform_4x_sample_raw.csv
+/EEE416 Project/data analysis/waveform_500hz_iirFiltered.csv
+/EEE416 Project/DebugUtility.cs
+/EEE416 Project/ESP32_Host/adc_audio.h
+/EEE416 Project/ESP32_Host/adc_audio.ino
+/EEE416 Project/ESP32_Host/ESP32_Host.ino
+/EEE416 Project/Giga_Client_M7/dac_audio.h
+/EEE416 Project/Giga_Client_M7/dac_audio.ino
+/EEE416 Project/Giga_Client_M7/Giga_Client_M7.ino
+/EEE416 Project/libraries/GuitarWizardPro/AudioDAC.cpp
+/EEE416 Project/libraries/GuitarWizardPro/AudioDAC.h
+/EEE416 Project/libraries/GuitarWizardPro/HALConfig.cpp
+/EEE416 Project/libraries/GuitarWizardPro/HALConfig.h
+/EEE416 Project/libraries/GuitarWizardPro/rf24_transceive.cpp
+/EEE416 Project/libraries/GuitarWizardPro/rf24_transceive.h
+/EEE416 Project/libraries/GuitarWizardPro/shared.h

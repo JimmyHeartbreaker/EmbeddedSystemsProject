@@ -23,34 +23,18 @@ namespace Audio::ADC
     }
   }
 
+  uint32_t adc_sample()
+  {
+    while (SENS.sar_slave_addr1.meas_status != 0);
+    SENS.sar_meas1_ctrl2.meas1_start_sar = 0;
+    SENS.sar_meas1_ctrl2.meas1_start_sar = 1;
+    while (SENS.sar_meas1_ctrl2.meas1_done_sar == 0);
+    return SENS.sar_meas1_ctrl2.meas1_data_sar;
+
+  }
   int adc_4x_sample()
   {
-      uint16_t adc_value;
-      while (SENS.sar_slave_addr1.meas_status != 0);
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 0;
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 1;
-      while (SENS.sar_meas1_ctrl2.meas1_done_sar == 0);
-      adc_value += SENS.sar_meas1_ctrl2.meas1_data_sar;
-
-      while (SENS.sar_slave_addr1.meas_status != 0);
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 0;
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 1;
-      while (SENS.sar_meas1_ctrl2.meas1_done_sar == 0);
-      adc_value += SENS.sar_meas1_ctrl2.meas1_data_sar;
-
-      while (SENS.sar_slave_addr1.meas_status != 0);
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 0;
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 1;
-      while (SENS.sar_meas1_ctrl2.meas1_done_sar == 0);
-      adc_value += SENS.sar_meas1_ctrl2.meas1_data_sar;
-
-      while (SENS.sar_slave_addr1.meas_status != 0);
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 0;
-      SENS.sar_meas1_ctrl2.meas1_start_sar = 1;
-      while (SENS.sar_meas1_ctrl2.meas1_done_sar == 0);
-      adc_value += SENS.sar_meas1_ctrl2.meas1_data_sar;
-
-      return adc_value;
+      return adc_sample() + adc_sample() + adc_sample() + adc_sample();
   }
 
   #define SENS_FORCE_XPD_AMP_PD  2 // Force power down
@@ -76,8 +60,6 @@ namespace Audio::ADC
     SENS.sar_hall_ctrl.hall_phase_force = true;   // RTC controller controls the hall sensor phase,not ulp coprocessor
   }
 
-  
-
   //runs 32k times per second. Is put into the   
   //place in Instructrum RAM for better performance 
   //https://docs.espressif.com/projects/esp-idf/en/stable/esp32s2/api-guides/memory-types.html
@@ -87,8 +69,7 @@ namespace Audio::ADC
     
     static int16_t sampleCount = 0;  //runs from 0 -> Shared::PACKET_SIZE/2 repeated 
     
-    //we are going to sample 4 times to reduce noise. We will reduce the gain in the receiving side
-   
+    //we are going to sample 4 times to reduce noise. We will reduce the gain in the receiving side 
     SecondaryBuffer[sampleCount] =adc_4x_sample();
   
     sampleCount++;

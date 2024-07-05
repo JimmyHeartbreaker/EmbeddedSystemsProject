@@ -7,4 +7,3 @@ namespace Audio::ADC
   void Setup(void (*onBufferFullEvent)(void* data, int length));
   void Teardown();
 }
-

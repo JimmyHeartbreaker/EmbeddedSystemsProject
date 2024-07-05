@@ -1,0 +1,11 @@
+* D:\_DOCUMENTS\Embedded Systems\EmbeddedSystemsProject\data analysis\cascaded_RLC.asc
+V1 N001 0 SINE(0 1 1000 0 0 0)
+C1 N002 0 30µ
+L2 N003 N002 0.86m
+C2 N003 0 1.2µ
+R3 N004 0 180
+R1 N002 N001 10
+L1 N004 N003 0.02
+.tran 0.1
+.backanno
+.end
