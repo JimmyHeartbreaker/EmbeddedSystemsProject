@@ -1,5 +1,8 @@
 #include "adc_audio.h"
 #include "rf24_transceive.h"
+#include "esp_bt.h"
+#include "esp_bt_main.h"
+#include "esp_wifi.h"
 
 
 enum State {
@@ -80,7 +83,11 @@ void loop()
 void setup() 
 {
   Serial.begin(115200);  
-  delay(1000);
+  delay(5000);
+  esp_bluedroid_disable();
+  esp_bt_controller_disable();
+  esp_wifi_stop();
+  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
   Serial.println("Arduino Nano ESP32 has booted");
  
 }

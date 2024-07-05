@@ -28,7 +28,7 @@ void loop()
     case State::SETUP:
       Serial.println("AUDIO_SETUP::BEGIN");
       Radio::Transceive::SetupForReceive(&SPI1);
-      Audio::D2AC::Setup(Radio::Transceive::ReceiveData,Shared::PACKED_SAMPLES_PER_PACKET);     
+      Audio::D2AC::Setup(Radio::Transceive::ReceiveData,Shared::PACKET_SIZE/2);     
       state = State::ACTIVE;      
       Serial.println("AUDIO_SETUP::END");
       break;
